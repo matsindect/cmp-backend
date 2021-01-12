@@ -23,7 +23,7 @@ exports.createOne = Model =>
 
 exports.getAll = Model =>
   catchAsyncFunc(async (req, res, next) => {
-    let filter = {};
+    let filter = { active: true };
     const tax_terms = new APIresourceFunc(Model.find(filter), req.query)
       .AdvancedFilter()
       .sort()
@@ -78,7 +78,7 @@ exports.updateOne = Model =>
 exports.deleteOne = Model =>
   catchAsyncFunc(async (req, res, next) => {
     const doc = await Model.findByIdAndUpdate(req.params.id, {
-      status: false
+      active: false
     });
 
     if (!doc) {

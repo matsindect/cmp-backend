@@ -46,7 +46,7 @@ const limiter = ratelimit({
 server.use('/api', limiter);
 
 //body parser
-server.use(bodyparser.json({ limit: '10kb' }));
+server.use(bodyparser.json({ limit: '1000kb' }));
 
 //Data sanitization
 server.use(mongoSanitize());
