@@ -7,12 +7,12 @@ router
   .route('/')
   .post(
     authController.protect,
-    authController.restrictTo('admin'),
+    // authController.restrictTo('admin'),
     sectorController.createSector
   )
   .get(
     authController.protect,
-    authController.restrictTo('admin'),
+    // authController.restrictTo('admin'),
     sectorController.getAllSectors
   );
 
@@ -20,12 +20,12 @@ router
   .route('/:id')
   .get(
     authController.protect,
-    authController.restrictTo('admin'),
+    // authController.restrictTo('admin'),
     sectorController.getOneSector
   )
   .delete(
     authController.protect,
-    authController.restrictTo('admin'),
+    // authController.restrictTo('admin'),
     sectorController.deleteSector
   );
 

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const types = Schema.Types;
+const slugify = require('slugify');
 
 const sectorSchema = new mongoose.Schema(
   {
@@ -18,10 +19,24 @@ const sectorSchema = new mongoose.Schema(
       required: true,
       min: 0
     },
-    image: {
-      type: String
-    },
-    is_active: {
+    categories: [
+      {
+        type: types.ObjectId,
+        ref: 'Category'
+      }
+    ],
+    featuredImageId: { type: Number },
+    images: [
+      {
+        url: { type: String },
+        type: {
+          type: String,
+          enum: ['image', 'gif'],
+          default: 'image'
+        }
+      }
+    ],
+    active: {
       type: Boolean,
       default: true,
       select: false

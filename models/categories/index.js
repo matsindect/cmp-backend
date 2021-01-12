@@ -14,13 +14,14 @@ const categorySchema = new mongoose.Schema(
     slug: {
       type: String
     },
-    image: {
-      type: String
-    },
-    sectors: [
+    image: [
       {
-        type: types.ObjectId,
-        ref: 'Sectors'
+        url: { type: String },
+        type: {
+          type: String,
+          enum: ['images', 'gif'],
+          default: 'image'
+        }
       }
     ],
     parent_categories: [
@@ -34,7 +35,7 @@ const categorySchema = new mongoose.Schema(
       required: true,
       min: 0
     },
-    is_active: {
+    active: {
       type: Boolean,
       default: true,
       select: false
