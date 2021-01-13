@@ -19,7 +19,7 @@ const sectorsRouter = require('./routes/sectorsRouter');
 
 const server = express();
 
-var whitelist = ['http://localhost:3000', 'http://localhost'];
+var whitelist = ['http://localhost:3000', 'http://localhost', 'https://constructionmarketuae.com'];
 var corsOptions = {
   origin: function(origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
