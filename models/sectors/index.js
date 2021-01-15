@@ -25,7 +25,10 @@ const sectorSchema = new mongoose.Schema(
         ref: 'Category'
       }
     ],
-    featuredImageId: { type: Number },
+    featuredImageId: {
+      type: types.ObjectId,
+      ref: 'Sector'
+    },
     images: [
       {
         url: { type: String },

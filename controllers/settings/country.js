@@ -1,9 +1,9 @@
 const multer = require('multer');
 const sharp = require('sharp');
-const Categories = require('../../models/categories');
+const Country = require('../../models//settings/country');
 const catchAsyncFunc = require('../../utils/catchAsyncFuncs');
 const AppError = require('../../utils/appError');
-const factory = require('./../handleFactory');
+const factory = require('../handleFactory');
 
 const multerStorage = multer.memoryStorage();
 
@@ -34,21 +34,20 @@ exports.resizeIcon = catchAsyncFunc(async (req, res, next) => {
     .resize(200, 200)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/categories/${req.file.filename}`);
+    .toFile(`public/country/${req.file.filename}`);
 
   next();
 });
 
-exports.createCategory = catchAsyncFunc(async (req, res, next) => {
+exports.createCountry = catchAsyncFunc(async (req, res, next) => {
   let data;
   if (req.body._id != null || req.body._id != undefined) {
-    console.log(req.body._id);
-    data = await Categories.findByIdAndUpdate({ _id: req.body.id }, req.body, {
+    data = await Country.findByIdAndUpdate({ _id: req.body.id }, req.body, {
       new: true,
       runValidators: true
     });
   } else {
-    data = await Categories.create(req.body);
+    data = await Country.create(req.body);
   }
 
   res.status(201).send({
@@ -57,10 +56,10 @@ exports.createCategory = catchAsyncFunc(async (req, res, next) => {
   });
 });
 
-exports.getAllCategories = factory.getAll(Categories);
+exports.getAllCountries = factory.getAll(Country);
 
-exports.getOneCategory = factory.getOne(Categories);
+exports.getOneCountry = factory.getOne(Country);
 
-exports.updateCategory = factory.updateOne(Categories);
+exports.updateCountry = factory.updateOne(Country);
 
-exports.deleteCategory = factory.deleteOne(Categories);
+exports.deleteCountry = factory.deleteOne(Country);

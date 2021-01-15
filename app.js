@@ -16,6 +16,7 @@ const profileRouter = require('./routes/profileRouter');
 const productRouter = require('./routes/productsRouter');
 const categoriesRouter = require('./routes/categoriesRouter');
 const sectorsRouter = require('./routes/sectorsRouter');
+const settingsRouter = require('./routes/settingsRouter');
 
 const server = express();
 
@@ -65,6 +66,7 @@ server.use('/api/v1/profiles', profileRouter);
 server.use('/api/v1/products', productRouter);
 server.use('/api/v1/categories', categoriesRouter);
 server.use('/api/v1/sectors', sectorsRouter);
+server.use('/api/v1/settings', settingsRouter);
 
 server.all('*', (req, res, next) => {
   next(new AppError(`Cannot Find ${req.originalUrl} on this server`, 404));

@@ -79,11 +79,9 @@ exports.createProduct = catchAsyncFunc(async (req, res, next) => {
       lower: true
     });
   if (req.body.quantity) productFields.quantity = req.body.quantity;
-  if (req.body.city) productFields.origin.city = req.body.city;
-  if (req.body.country) productFields.origin.country = req.body.country;
-  if (req.body.currency)
-    productFields.product_pricing.currency = req.body.currency;
-  if (req.body.price) productFields.product_pricing.price = req.body.price;
+  if (req.body.origin) productFields.origin = req.body.origin;
+  if (req.body.product_pricing)
+    productFields.product_pricing = req.body.product_pricing;
   if (req.body.location) productFields.product_location = req.body.location;
   if (req.body.product_attributes) {
     req.body.product_attributes.forEach(element => {
@@ -91,12 +89,11 @@ exports.createProduct = catchAsyncFunc(async (req, res, next) => {
     });
   }
 
-  if (req.files) {
-    req.body.images.forEach(el => {
-      productFields.images.unshift(el);
-    });
-    productFields.products_catalogue.push(req.body.products_catalogue);
-  }
+  if (req.body.images) productFields.images = req.body.images;
+
+  if (req.body.products_catalogue)
+    productFields.products_catalogue = req.body.products_catalogue;
+
   if (req.body.sectors) {
     req.body.sectors.forEach(sector => {
       productFields.sectors.push(sector);
@@ -107,19 +104,18 @@ exports.createProduct = catchAsyncFunc(async (req, res, next) => {
       productFields.product_categories.push(category);
     });
   }
-  let products = await Product.findOne({ slug: productFields.slug });
+  let products = await Product.findOne({ _id: req.body._id });
 
   if (products) {
-    let update = await Product.findOneAndUpdate(
-      { slug: productFields.slug },
+    console.log(products);
+    let data = await Product.findByIdAndUpdate(
+      req.body._id,
       { $set: productFields },
       { new: true }
     );
     res.status(200).send({
       status: 'Success',
-      data: {
-        update
-      }
+      data
     });
   } else {
     const newProduct = new Product(productFields);

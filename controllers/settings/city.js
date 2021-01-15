@@ -1,9 +1,9 @@
 const multer = require('multer');
 const sharp = require('sharp');
-const Categories = require('../../models/categories');
+const City = require('../../models//settings/city');
 const catchAsyncFunc = require('../../utils/catchAsyncFuncs');
 const AppError = require('../../utils/appError');
-const factory = require('./../handleFactory');
+const factory = require('../handleFactory');
 
 const multerStorage = multer.memoryStorage();
 
@@ -34,21 +34,20 @@ exports.resizeIcon = catchAsyncFunc(async (req, res, next) => {
     .resize(200, 200)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/categories/${req.file.filename}`);
+    .toFile(`public/city/${req.file.filename}`);
 
   next();
 });
 
-exports.createCategory = catchAsyncFunc(async (req, res, next) => {
+exports.createCity = catchAsyncFunc(async (req, res, next) => {
   let data;
   if (req.body._id != null || req.body._id != undefined) {
-    console.log(req.body._id);
-    data = await Categories.findByIdAndUpdate({ _id: req.body.id }, req.body, {
+    data = await City.findByIdAndUpdate({ _id: req.body.id }, req.body, {
       new: true,
       runValidators: true
     });
   } else {
-    data = await Categories.create(req.body);
+    data = await City.create(req.body);
   }
 
   res.status(201).send({
@@ -57,10 +56,10 @@ exports.createCategory = catchAsyncFunc(async (req, res, next) => {
   });
 });
 
-exports.getAllCategories = factory.getAll(Categories);
+exports.getAllCities = factory.getAll(City);
 
-exports.getOneCategory = factory.getOne(Categories);
+exports.getOneCity = factory.getOne(City);
 
-exports.updateCategory = factory.updateOne(Categories);
+exports.updateCity = factory.updateOne(City);
 
-exports.deleteCategory = factory.deleteOne(Categories);
+exports.deleteCity = factory.deleteOne(City);

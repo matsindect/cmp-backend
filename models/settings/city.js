@@ -3,16 +3,25 @@ const Schema = mongoose.Schema;
 const types = Schema.Types;
 const slugify = require('slugify');
 
-const categorySchema = new mongoose.Schema(
+const CitySchema = new mongoose.Schema(
   {
     name: {
+      type: String
+    },
+    slug: {
       type: String
     },
     description: {
       type: String
     },
-    slug: {
-      type: String
+    order: {
+      type: Number,
+      required: true,
+      min: 0
+    },
+    featuredImageId: {
+      type: types.ObjectId,
+      ref: 'City'
     },
     images: [
       {
@@ -24,21 +33,6 @@ const categorySchema = new mongoose.Schema(
         }
       }
     ],
-    featuredImageId: {
-      type: types.ObjectId,
-      ref: 'Category'
-    },
-    parent_categories: [
-      {
-        type: types.ObjectId,
-        ref: 'Category'
-      }
-    ],
-    order: {
-      type: Number,
-      required: true,
-      min: 0
-    },
     active: {
       type: Boolean,
       default: true,
@@ -51,7 +45,7 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-categorySchema.pre('save', function(next) {
+CitySchema.pre('save', function(next) {
   this.slug = slugify(this.name, {
     replacement: '-',
     remove: /[*+~.()'"!:@]/g,
@@ -59,6 +53,7 @@ categorySchema.pre('save', function(next) {
   });
   next();
 });
-const Category = mongoose.model('Category', categorySchema);
 
-module.exports = Category;
+const City = mongoose.model('City', CitySchema);
+
+module.exports = City;
