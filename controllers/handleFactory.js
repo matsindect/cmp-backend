@@ -31,7 +31,7 @@ exports.getAll = Model =>
       .paginate();
 
     const data = await tax_terms.query;
-
+    // console.log(data);
     res.status(200).send({
       status: 'Success',
       results: data.length,

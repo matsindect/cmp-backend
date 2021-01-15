@@ -7,12 +7,12 @@ router
   .route('/')
   .post(
     authController.protect,
-    authController.restrictTo('admin'),
+    // authController.restrictTo('admin'),
     productController.createProduct
   )
   .get(
     authController.protect,
-    authController.restrictTo('admin'),
+    // authController.restrictTo('admin'),
     productController.getAllProducts
   );
 
@@ -20,12 +20,12 @@ router
   .route('/:id')
   .get(
     authController.protect,
-    authController.restrictTo('admin'),
+    // authController.restrictTo('admin'),
     productController.getOneProduct
   )
   .delete(
     authController.protect,
-    authController.restrictTo('admin'),
+    // authController.restrictTo('admin'),
     productController.delleteProduct
   );
 

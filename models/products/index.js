@@ -54,7 +54,16 @@ const productSchema = new mongoose.Schema(
     description: {
       type: String
     },
-    products_catalogue: [String],
+    products_catalogue: [
+      {
+        url: { type: String },
+        type: {
+          type: String,
+          enum: ['image', 'video', 'gif'],
+          default: 'image'
+        }
+      }
+    ],
     images: [
       {
         url: { type: String },
@@ -69,6 +78,12 @@ const productSchema = new mongoose.Schema(
       {
         type: types.ObjectId,
         ref: 'Category'
+      }
+    ],
+    tags: [
+      {
+        type: types.ObjectId,
+        ref: 'Tags'
       }
     ],
     sectors: [
@@ -93,7 +108,7 @@ const productSchema = new mongoose.Schema(
         ref: 'Reviews'
       }
     ],
-    is_active: {
+    active: {
       type: Boolean,
       default: true,
       select: false
@@ -104,15 +119,6 @@ const productSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
-
-productSchema.pre('save', function(next) {
-  this.slug = slugify(this.product_name, {
-    replacement: '-',
-    remove: /[*+~.()'"!:@]/g,
-    lower: true
-  });
-  next();
-});
 
 const Product = mongoose.model('Product', productSchema);
 

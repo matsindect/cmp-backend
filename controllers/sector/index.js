@@ -39,7 +39,22 @@ exports.resizeIcon = catchAsyncFunc(async (req, res, next) => {
   next();
 });
 
-exports.createSector = factory.createOne(Sectors);
+exports.createSector = catchAsyncFunc(async (req, res, next) => {
+  let data;
+  if (req.body._id != null || req.body._id != undefined) {
+    data = await Sectors.findByIdAndUpdate({ _id: req.body.id }, req.body, {
+      new: true,
+      runValidators: true
+    });
+  } else {
+    data = await Sectors.create(req.body);
+  }
+
+  res.status(201).send({
+    status: 'success',
+    data
+  });
+});
 
 exports.getAllSectors = factory.getAll(Sectors);
 
