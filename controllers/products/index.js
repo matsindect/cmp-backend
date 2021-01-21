@@ -84,9 +84,8 @@ exports.createProduct = catchAsyncFunc(async (req, res, next) => {
     productFields.product_pricing = req.body.product_pricing;
   if (req.body.location) productFields.product_location = req.body.location;
   if (req.body.product_attributes) {
-    req.body.product_attributes.forEach(element => {
-      productFields.product_attributes.unshift(element);
-    });
+    productFields.product_attributes = req.body.product_attributes;
+    console.log(req.body.product_attributes);
   }
 
   if (req.body.images) productFields.images = req.body.images;
