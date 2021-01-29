@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const bodyparser = require('body-parser');
 const morgan = require('morgan');
@@ -19,6 +20,8 @@ const sectorsRouter = require('./routes/sectorsRouter');
 const settingsRouter = require('./routes/settingsRouter');
 
 const server = express();
+// Serving static files
+server.use(express.static(path.join(__dirname, 'public')));
 
 var whitelist = [
   'http://localhost:3000',

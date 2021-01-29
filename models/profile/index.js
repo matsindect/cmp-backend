@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const types = Schema.Types;
+const slugify = require('slugify');
 
 const profileSchema = new mongoose.Schema(
   {
@@ -9,17 +10,12 @@ const profileSchema = new mongoose.Schema(
       type: types.ObjectId,
       ref: 'User'
     },
+    slug: {
+      type: String
+    },
     company: {
       name: {
         type: String
-      },
-      number: {
-        code: {
-          type: String
-        },
-        number: {
-          type: String
-        }
       },
       location: {
         type: {
@@ -27,31 +23,33 @@ const profileSchema = new mongoose.Schema(
           default: 'Point',
           enum: ['Point']
         },
-        coordinates: [Number],
+        coordinates: {
+          type: [Number],
+          default: [51.5287714, -0.2420248],
+          index: '2dsphere'
+        },
         address: String,
-        description: String
+        state: {
+          type: String
+        },
+        city: {
+          type: String
+        },
+        area: {
+          type: String
+        },
+        country: {
+          type: String
+        }
       },
       about: {
         type: String
       },
-      address: {
+      tel: {
         type: String
       },
-      tel: {
-        code: {
-          type: String
-        },
-        number: {
-          type: String
-        }
-      },
       fax: {
-        code: {
-          type: String
-        },
-        number: {
-          type: String
-        }
+        type: String
       },
       website: {
         type: String
@@ -62,16 +60,19 @@ const profileSchema = new mongoose.Schema(
       businesstype: {
         type: types.ObjectId,
         ref: 'BusinessType'
-      },
-      logo: {
-        type: String
-      },
-      license: {
-        type: String
       }
     },
+    logo: {
+      type: String
+    },
+    license: {
+      type: String
+    },
     products_catalogue: [String],
-    gallery: [String],
+    images: [String],
+    featuredImageId: {
+      type: String
+    },
     contact_person: [
       {
         name: {
@@ -118,18 +119,6 @@ const profileSchema = new mongoose.Schema(
         ref: 'Products'
       }
     ],
-    city: [
-      {
-        type: types.ObjectId,
-        ref: 'City'
-      }
-    ],
-    country: [
-      {
-        type: types.ObjectId,
-        ref: 'Country'
-      }
-    ],
     social: {
       youtube: {
         type: String
@@ -158,6 +147,15 @@ const profileSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
+
+profileSchema.pre('save', function(next) {
+  this.slug = slugify(this.company.name, {
+    replacement: '-',
+    remove: /[*+~.()'"!:@]/g,
+    lower: true
+  });
+  next();
+});
 
 const Profile = mongoose.model('Profile', profileSchema);
 
