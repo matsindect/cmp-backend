@@ -9,6 +9,7 @@ const slugify = require('slugify');
 const factory = require('./../handleFactory');
 const sharp = require('sharp');
 const fs = require('fs');
+const pdf2base64 = require('pdf-to-base64');
 
 const removeSpace = item => {
   return item.replace(/\s/g, '-');
@@ -277,6 +278,10 @@ exports.getProfile = catchAsyncFunc(async (req, res, next) => {
   // .populate('services')
   // .populate('city')
   // .populate('country');
+
+  var license = await pdf2base64(`public/${data.license}`);
+
+  data.license = `data:application/octet-stream;base64,${license}`;
 
   if (!data) {
     return next(new AppError('There is no dataument with that id', 404));

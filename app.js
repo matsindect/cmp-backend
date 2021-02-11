@@ -26,7 +26,8 @@ server.use(express.static(path.join(__dirname, 'public')));
 var whitelist = [
   'http://localhost:3000',
   'http://localhost',
-  'https://constructionmarketuae.com'
+  'https://constructionmarketuae.com',
+  '*'
 ];
 var corsOptions = {
   origin: function(origin, callback) {
