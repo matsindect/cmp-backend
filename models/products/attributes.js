@@ -13,12 +13,39 @@ const attributesSchema = new mongoose.Schema(
     description: {
       type: String
     },
+    slug: {
+      type: String
+    },
+    order: {
+      type: Number,
+      required: true,
+      min: 0
+    },
+    images: [
+      {
+        url: { type: String },
+        type: {
+          type: String,
+          enum: ['image', 'gif'],
+          default: 'image'
+        }
+      }
+    ],
+    featuredImageId: {
+      type: types.ObjectId,
+      ref: 'Service'
+    },
     sectors: [
       {
         type: types.ObjectId,
-        ref: 'Sectors'
+        ref: 'Sector'
       }
     ],
+    varriants:[{
+      label:{
+        type: String
+      }
+    }],
     parent_attributes: [
       {
         type: types.ObjectId,
