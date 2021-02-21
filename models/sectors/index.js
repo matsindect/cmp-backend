@@ -19,6 +19,12 @@ const sectorSchema = new mongoose.Schema(
       required: true,
       min: 0
     },
+    parent:[
+      {
+        type: types.ObjectId,
+        ref: 'Sector'
+      }
+    ],
     categories: [
       {
         type: types.ObjectId,

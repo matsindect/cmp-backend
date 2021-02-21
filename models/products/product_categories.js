@@ -17,7 +17,7 @@ const productCategorySchema = new mongoose.Schema(
     sectors: [
       {
         type: types.ObjectId,
-        ref: 'Sectors'
+        ref: 'Sector'
       }
     ],
     parent: [
