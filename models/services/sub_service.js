@@ -16,6 +16,10 @@ const subServiceSchema = new mongoose.Schema(
         ref: 'Service'
       }
     ],
+    sectors:{
+      type: types.ObjectId,
+      ref: 'Sector' 
+    },
     order: {
       type: Number,
       required: true,

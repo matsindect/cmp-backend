@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const bodyparser = require('body-parser');
 const morgan = require('morgan');
@@ -17,13 +18,20 @@ const productRouter = require('./routes/productsRouter');
 const categoriesRouter = require('./routes/categoriesRouter');
 const sectorsRouter = require('./routes/sectorsRouter');
 const settingsRouter = require('./routes/settingsRouter');
+const businessTypeRouter = require('./routes/businessRouter');
+const serviceRouter = require('./routes/serviceRouter');
+const productAttributeRouter = require('./routes/productAttributesrouter');
 
 const server = express();
+// Serving static files
+server.use(express.static(path.join(__dirname, 'public')));
 
 var whitelist = [
   'http://localhost:3000',
   'http://localhost',
-  'https://constructionmarketuae.com'
+  'https://constructionmarketuae.com',
+  'https://constructmeplace.com',
+  '*'
 ];
 var corsOptions = {
   origin: function(origin, callback) {
@@ -51,7 +59,7 @@ const limiter = ratelimit({
 server.use('/api', limiter);
 
 //body parser
-server.use(bodyparser.json({ limit: '1000kb' }));
+server.use(bodyparser.json({ limit: '1000000kb' }));
 
 //Data sanitization
 server.use(mongoSanitize());
@@ -67,6 +75,9 @@ server.use('/api/v1/products', productRouter);
 server.use('/api/v1/categories', categoriesRouter);
 server.use('/api/v1/sectors', sectorsRouter);
 server.use('/api/v1/settings', settingsRouter);
+server.use('/api/v1/business-types', businessTypeRouter);
+server.use('/api/v1/services', serviceRouter);
+server.use('/api/v1/product-attributes', productAttributeRouter);
 
 server.all('*', (req, res, next) => {
   next(new AppError(`Cannot Find ${req.originalUrl} on this server`, 404));

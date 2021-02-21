@@ -89,7 +89,7 @@ const productSchema = new mongoose.Schema(
     sectors: [
       {
         type: types.ObjectId,
-        ref: 'Sectors'
+        ref: 'Sector'
       }
     ],
     origin: {

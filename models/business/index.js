@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const types = Schema.Types;
 const slugify = require('slugify')
 
-const serviceSchema = new mongoose.Schema(
+const BusinessTypeSchema = new mongoose.Schema(
   {
     name: {
       type: String
@@ -31,19 +31,17 @@ const serviceSchema = new mongoose.Schema(
     ],
     featuredImageId: {
       type: types.ObjectId,
-      ref: 'Service'
+      ref: 'BusinessType'
     },
     sectors:[{
       type: types.ObjectId,
       ref: 'Sector' 
     }],
-    parent:[
-      {
-        type: types.ObjectId,
-      ref: 'Service'
-      }
-    ],
-    is_active: {
+    parent:[{
+      type: types.ObjectId,
+      ref: 'BusinessType' 
+    }],
+    active: {
       type: Boolean,
       default: true,
       select: false
@@ -55,7 +53,7 @@ const serviceSchema = new mongoose.Schema(
   }
 );
 
-serviceSchema.pre('save', function(next) {
+BusinessTypeSchema.pre('save', function(next) {
   this.slug = slugify(this.name, {
     replacement: '-',
     remove: /[*+~.()'"!:@]/g,
@@ -63,6 +61,7 @@ serviceSchema.pre('save', function(next) {
   });
   next();
 });
-const Service = mongoose.model('Service', serviceSchema);
 
-module.exports = Service;
+const BusinessType = mongoose.model('BusinessType', BusinessTypeSchema);
+
+module.exports = BusinessType;

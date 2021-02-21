@@ -7,65 +7,162 @@ const Sector = require('./../../models/sectors');
 const User = require('./../../models/userModel');
 const slugify = require('slugify');
 const factory = require('./../handleFactory');
+const sharp = require('sharp');
+const fs = require('fs');
+const pdf2base64 = require('pdf-to-base64');
 
+const removeSpace = item => {
+  return item.replace(/\s/g, '-');
+};
 exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   //Get fields
-  const profileFields = {};
-  profileFields.user = req.user.id;
-  if (req.body.name) profileFields.company.name = req.body.name;
-  if (req.body.number) profileFields.company.number = req.body.number;
-  if (req.body.about) profileFields.company.about = req.body.about;
-  if (req.body.location) profileFields.company.location = req.body.location;
-  if (req.body.address) profileFields.company.address = req.body.address;
-  if (req.body.tel) profileFields.company.tel = req.body.tel;
-  if (req.body.fax) profileFields.company.fax = req.body.fax;
-  if (req.body.website) profileFields.company.website = req.body.website;
-  if (req.body.email) profileFields.company.email = req.body.email;
-  if (req.body.businesstype)
-    profileFields.company.businesstype = req.body.businesstype;
-  if (req.body.logo) profileFields.company.logo = req.body.logo;
-  if (req.body.license) profileFields.company.license = req.body.license;
-  if (req.body.email) profileFields.company.email = req.body.email;
-
-  //social
-  profileFields.social = {};
-  if (req.body.youtube) profileFields.youtube = req.body.youtube;
-  if (req.body.twitter) profileFields.twitter = req.body.twitter;
-  if (req.body.facebook) profileFields.facebook = req.body.facebook;
-  if (req.body.linkedin) profileFields.linkedin = req.body.linkedin;
-  if (req.body.instagram) profileFields.instagram = req.body.instagram;
-
   let profile = await Profile.findOne({ user: req.user.id });
+
   if (profile) {
     //Update
-    let doc = await Profile.findOneAndUpdate(
-      { user: req.user.id },
-      { $set: profileFields },
-      { new: true }
-    );
+
+    if (req.body.name) profile.company.name = req.body.company.name;
+    if (req.body.about) profile.company.about = req.body.company.about;
+    if (req.body.location) profile.company.location = req.body.company.location;
+    if (req.body.address) profile.company.address = req.body.company.address;
+    if (req.body.tel) profile.company.tel = req.body.company.tel;
+    if (req.body.fax) profile.company.fax = req.body.company.fax;
+    if (req.body.website) profile.company.website = req.body.company.website;
+    if (req.body.email) profile.company.email = req.body.company.email;
+    if (req.body.businesstype)
+      profile.company.businesstype = req.body.company.businesstype;
+    if (req.body.logo) {
+      if (req.body.logo.startsWith('profile-logo/')) {
+        profile.logo = req.body.logo;
+      } else {
+        var logo = req.body.logo.replace(/^data:.+;base64,/, '');
+        var buffer = new Buffer.from(logo, 'base64');
+        var filenane = `profile-logo/${removeSpace(
+          req.body.company.name
+        )}-logo-${Date.now()}.jpeg`;
+        await sharp(buffer)
+          .resize(200, 200)
+          .toFormat('jpeg')
+          .jpeg({ quality: 90 })
+          .toFile(`public/${filenane}`);
+
+        profile.logo = filenane;
+      }
+    }
+    if (req.body.license) {
+      if (req.body.license.startsWith('profile-license/')) {
+        profile.license = req.body.license;
+      } else {
+        var license = req.body.license.replace(/^data:.+;base64,/, '');
+        var trade_licenceBuffer = new Buffer.from(license, 'base64');
+        var filename = `profile-license/${removeSpace(
+          req.body.company.name
+        )}-${Date.now()}-license.pdf`;
+        await fs.writeFile(
+          `public/${filename}`,
+          trade_licenceBuffer,
+          'binary',
+          function(err) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log('The trade_licence file was saved!');
+            }
+          }
+        );
+        profile.license = filename;
+      }
+    }
+    if (req.body.email) profile.company.email = req.body.email;
+    if (req.body.images) {
+      let images = [];
+      await Promise.all(
+        req.body.images.map(async (file, i) => {
+          if (file.url.startsWith('gallary/')) {
+            images.push(file);
+          } else {
+            const filename = `gallary/${removeSpace(
+              req.body.name
+            )}-${Date.now()}-${i + 1}.jpeg`;
+            var image = file.url.replace(/^data:.+;base64,/, '');
+            var imageeBuffer = new Buffer.from(image, 'base64');
+            await sharp(imageeBuffer)
+              .resize(2000, 1333)
+              .toFormat('jpeg')
+              .jpeg({ quality: 90 })
+              .toFile(`public/${filename}`);
+
+            file.url = filename;
+            images.push(file);
+          }
+        })
+      );
+      profile.images = images;
+    }
+    if (req.body.products_catalogue) {
+      let products_catalogue = [];
+      await Promise.all(
+        req.body.products_catalogue.map(async (file, i) => {
+          if (file.url.startsWith('profile-catalogues/')) {
+            products_catalogue.push(file);
+          } else {
+            const filename = `profile-catalogues/${removeSpace(
+              req.body.name
+            )}-${Date.now()}-${i + 1}.pdf`;
+            var catalogue = file.url.replace(/^data:.+;base64,/, '');
+            var catalogueeBuffer = new Buffer.from(catalogue, 'base64');
+            await fs.writeFile(`public/${filename}`, catalogueeBuffer, function(
+              err
+            ) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log('The trade_licence file was saved!');
+              }
+            });
+            file.url = filename;
+            products_catalogue.push(file);
+          }
+        })
+      );
+      profile.products_catalogue = products_catalogue;
+    }
+
+    //social
+
+    if (req.body.youtube) profile.social.youtube = req.body.youtube;
+    if (req.body.twitter) profile.social.twitter = req.body.twitter;
+    if (req.body.facebook) profile.social.facebook = req.body.facebook;
+    if (req.body.linkedin) profile.social.linkedin = req.body.linkedin;
+    if (req.body.instagram) profile.social.instagram = req.body.instagram;
+
+    var doc = await profile.save();
 
     res.status(200).send({
       status: 'Success',
-      data: {
-        doc
-      }
+      data: doc
     });
   } else {
     //Create
-    let profile = await Profile.findOne({ slug: profileFields.slug });
+
+    let profile = await Profile.findOne({
+      slug: slugify(req.body.name, {
+        replacement: '-',
+        remove: /[*+~.()'"!:@]/g,
+        lower: true
+      })
+    });
     if (profile) {
       return next(new AppError('Company name already taken', 400));
     }
-
+    req.body.user = req.user.id;
     //save Profile
-    const doc = new Profile(profileFields);
+    const doc = new Profile(req.body);
     await doc.save();
 
     res.status(200).send({
       status: 'Success',
-      data: {
-        doc
-      }
+      data: doc
     });
   }
 });
@@ -156,16 +253,35 @@ exports.deleteSector = catchAsyncFunc(async (req, res, next) => {
   });
 });
 
-exports.getAllProfiles = factory.getAll(Profile);
+exports.getAllProfiles = catchAsyncFunc(async (req, res, next) => {
+  let filter = { is_active: true };
+  const tax_terms = new APIresourceFunc(Profile.find(filter), req.query)
+    .AdvancedFilter()
+    .sort()
+    .fieldSort()
+    .paginate();
+
+  const data = await tax_terms.query;
+  // console.log(data);
+  res.status(200).send({
+    status: 'Success',
+    results: data.length,
+    data
+  });
+});
 
 exports.getProfile = catchAsyncFunc(async (req, res, next) => {
-  let data = await Profile.findById(req.params.id)
-    .populate('sectors')
-    .populate('business_type')
-    .populated('categories')
-    .populate('services')
-    .populate('city')
-    .populate('country');
+  let data = await Profile.findById(req.params.id);
+  // .populate('sectors')
+  // .populate('business_type')
+  // .populate('categories')
+  // .populate('services')
+  // .populate('city')
+  // .populate('country');
+
+  var license = await pdf2base64(`public/${data.license}`);
+
+  data.license = `data:application/octet-stream;base64,${license}`;
 
   if (!data) {
     return next(new AppError('There is no dataument with that id', 404));
