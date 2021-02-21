@@ -37,6 +37,10 @@ const serviceSchema = new mongoose.Schema(
       type: types.ObjectId,
       ref: 'Sector' 
     }],
+    business_types:[{
+      type: types.ObjectId,
+      ref: 'BusinessType' 
+    }],
     parent:[
       {
         type: types.ObjectId,
