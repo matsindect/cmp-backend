@@ -12,14 +12,26 @@ const subServiceSchema = new mongoose.Schema(
     },
     parent: [
       {
-        type: types.ObjectId,
-        ref: 'Service'
+        value:{
+          type:types.ObjectId,
+          ref:'Service'
+        },
+        label:{
+          type:String
+        }
       }
     ],
-    sectors:{
-      type: types.ObjectId,
-      ref: 'Sector' 
-    },
+    sectors:[
+      {
+      value:{
+        type:types.ObjectId,
+        ref:'Sector'
+      },
+      label:{
+        type:String
+      }
+    }
+  ],
     order: {
       type: Number,
       required: true,

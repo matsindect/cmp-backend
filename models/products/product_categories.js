@@ -16,10 +16,34 @@ const productCategorySchema = new mongoose.Schema(
     },
     sectors: [
       {
-        type: types.ObjectId,
-        ref: 'Sector'
+        value:{
+          type:types.ObjectId,
+          ref:'Sector'
+        },
+        label:{
+          type:String
+        }
       }
     ],
+    order: {
+      type: Number,
+      required: true,
+      min: 0
+    },
+    images: [
+      {
+        url: { type: String },
+        type: {
+          type: String,
+          enum: ['image', 'gif'],
+          default: 'image'
+        }
+      }
+    ],
+    featuredImageId: {
+      type: types.ObjectId,
+      ref: 'Service'
+    },
     parent: [
       {
         type: types.ObjectId,

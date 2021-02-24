@@ -37,8 +37,13 @@ const attributesSchema = new mongoose.Schema(
     },
     sectors: [
       {
-        type: types.ObjectId,
-        ref: 'Sector'
+        value:{
+          type:types.ObjectId,
+          ref:'Sector'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     varriants:[{

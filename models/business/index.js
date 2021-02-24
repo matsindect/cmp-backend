@@ -33,14 +33,27 @@ const BusinessTypeSchema = new mongoose.Schema(
       type: types.ObjectId,
       ref: 'BusinessType'
     },
-    sectors:[{
-      type: types.ObjectId,
-      ref: 'Sector' 
-    }],
+    sectors:[
+      {
+        value:{
+          type:types.ObjectId,
+          ref:'Sector'
+        },
+        label:{
+          type:String
+        }
+      }
+    ],
     parent:[{
-      type: types.ObjectId,
-      ref: 'BusinessType' 
-    }],
+      value:{
+        type:types.ObjectId,
+        ref:'BusinessType'
+      },
+      label:{
+        type:String
+      }
+    }
+  ],
     active: {
       type: Boolean,
       default: true,

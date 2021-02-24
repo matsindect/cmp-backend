@@ -76,20 +76,35 @@ const productSchema = new mongoose.Schema(
     ],
     product_categories: [
       {
-        type: types.ObjectId,
-        ref: 'Category'
+        value:{
+          type:types.ObjectId,
+          ref:'ProductCategory'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     tags: [
       {
-        type: types.ObjectId,
-        ref: 'Tags'
+        value:{
+          type:types.ObjectId,
+          ref:'Tags'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     sectors: [
       {
-        type: types.ObjectId,
-        ref: 'Sector'
+        value:{
+          type:types.ObjectId,
+          ref:'Sector'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     origin: {
