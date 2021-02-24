@@ -33,18 +33,37 @@ const serviceSchema = new mongoose.Schema(
       type: types.ObjectId,
       ref: 'Service'
     },
-    sectors:[{
-      type: types.ObjectId,
-      ref: 'Sector' 
-    }],
-    business_types:[{
-      type: types.ObjectId,
-      ref: 'BusinessType' 
-    }],
+    sectors:[
+      {
+      value:{
+        type:types.ObjectId,
+        ref:'Sector'
+      },
+      label:{
+        type:String
+      }
+    }
+  ],
+    business_types:[
+      {
+      value:{
+        type:types.ObjectId,
+        ref:'BusinessType'
+      },
+      label:{
+        type:String
+      }
+    }
+  ],
     parent:[
       {
-        type: types.ObjectId,
-      ref: 'Service'
+        value:{
+          type:types.ObjectId,
+          ref:'Service'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     is_active: {

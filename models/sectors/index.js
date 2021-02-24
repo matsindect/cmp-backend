@@ -20,16 +20,28 @@ const sectorSchema = new mongoose.Schema(
       min: 0
     },
     parent:[
+      
       {
-        type: types.ObjectId,
-        ref: 'Sector'
+        value:{
+          type:types.ObjectId,
+          ref:'Sector'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     categories: [
       {
-        type: types.ObjectId,
-        ref: 'Category'
+        value:{
+          type:types.ObjectId,
+          ref:'Category'
+        },
+        label:{
+          type:String
+        }
       }
+      
     ],
     featuredImageId: {
       type: types.ObjectId,

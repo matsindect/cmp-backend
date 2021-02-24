@@ -91,32 +91,57 @@ const profileSchema = new mongoose.Schema(
     ],
     categories: [
       {
-        type: types.ObjectId,
-        ref: 'Category'
+        value:{
+          type:types.ObjectId,
+          ref:'Category'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     sectors: [
       {
-        type: types.ObjectId,
-        ref: 'Sectors'
+        value:{
+          type:types.ObjectId,
+          ref:'Sector'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     services: [
       {
-        type: types.ObjectId,
-        ref: 'Services'
+        value:{
+          type:types.ObjectId,
+          ref:'Services'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     sub_services: [
       {
-        type: types.ObjectId,
-        ref: 'Subservices'
+        value:{
+          type:types.ObjectId,
+          ref:'Subservices'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     products: [
-      {
-        type: types.ObjectId,
-        ref: 'Products'
+     {
+        value:{
+          type:types.ObjectId,
+          ref:'Products'
+        },
+        label:{
+          type:String
+        }
       }
     ],
     social: {
