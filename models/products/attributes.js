@@ -16,6 +16,17 @@ const attributesSchema = new mongoose.Schema(
     slug: {
       type: String
     },
+    categories:[
+      {
+        value:{
+          type:types.ObjectId,
+          ref:'ProductCategory'
+        },
+        label:{
+          type:String
+        }
+      }
+    ],
     order: {
       type: Number,
       required: true,
@@ -46,7 +57,7 @@ const attributesSchema = new mongoose.Schema(
         }
       }
     ],
-    varriants:[{
+    variants:[{
       label:{
         type: String
       }

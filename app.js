@@ -57,7 +57,7 @@ const limiter = ratelimit({
   windowMs: 60 * 60 * 1000,
   message: 'You have exceeded the number of request, Try in an hour'
 });
-server.use('/api', limiter);
+// server.use('/api', limiter);
 
 //body parser
 server.use(bodyparser.json({ limit: '1000000kb' }));
