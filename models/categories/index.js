@@ -28,25 +28,36 @@ const categorySchema = new mongoose.Schema(
       type: types.ObjectId,
       ref: 'Category'
     },
-    sectors:[
+    sectors: [
       {
-        value:{
-          type:types.ObjectId,
-          ref:'Sector'
+        value: {
+          type: types.ObjectId,
+          ref: 'Sector'
         },
-        label:{
-          type:String
+        label: {
+          type: String
         }
       }
     ],
     parent_categories: [
       {
-        value:{
-          type:types.ObjectId,
-          ref:'Category'
+        value: {
+          type: types.ObjectId,
+          ref: 'Category'
         },
-        label:{
-          type:String
+        label: {
+          type: String
+        }
+      }
+    ],
+    child_categories: [
+      {
+        value: {
+          type: types.ObjectId,
+          ref: 'Category'
+        },
+        label: {
+          type: String
         }
       }
     ],

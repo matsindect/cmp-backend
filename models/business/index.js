@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const types = Schema.Types;
-const slugify = require('slugify')
+const slugify = require('slugify');
 
 const BusinessTypeSchema = new mongoose.Schema(
   {
@@ -33,27 +33,39 @@ const BusinessTypeSchema = new mongoose.Schema(
       type: types.ObjectId,
       ref: 'BusinessType'
     },
-    sectors:[
+    service_category: [
       {
-        value:{
-          type:types.ObjectId,
-          ref:'Sector'
+        value: {
+          type: types.ObjectId,
+          ref: 'ServiceSategory'
         },
-        label:{
-          type:String
+        label: {
+          type: String
         }
       }
     ],
-    parent:[{
-      value:{
-        type:types.ObjectId,
-        ref:'BusinessType'
-      },
-      label:{
-        type:String
+    product_category: [
+      {
+        value: {
+          type: types.ObjectId,
+          ref: 'ProductSategory'
+        },
+        label: {
+          type: String
+        }
       }
-    }
-  ],
+    ],
+    parent: [
+      {
+        value: {
+          type: types.ObjectId,
+          ref: 'BusinessType'
+        },
+        label: {
+          type: String
+        }
+      }
+    ],
     active: {
       type: Boolean,
       default: true,

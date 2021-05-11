@@ -11,10 +11,16 @@ router
     categoryController.createCategory
   )
   .get(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     categoryController.getAllCategories
   );
+
+router.route('/sub').get(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  categoryController.getSubCategories
+);
 
 router
   .route('/:id')

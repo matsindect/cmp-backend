@@ -8,14 +8,18 @@ const fs = require('fs');
 const removeSpace = item => {
   return item.replace(/\s/g, '-');
 };
-exports.createBusinessType = catchAsyncFunc(async(req,res, next)=>{
-    let data;
+exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
+  let data;
   if (req.body._id != null || req.body._id != undefined) {
-    console.log(req.body._id);
-    data = await BusinessType.findByIdAndUpdate({ _id: req.body.id }, req.body, {
-      new: true,
-      runValidators: true
-    });
+    // console.log(req.body._id);
+    data = await BusinessType.findByIdAndUpdate(
+      { _id: req.body.id },
+      req.body,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
   } else {
     if (req.body.images) {
       let images = [];
@@ -49,7 +53,7 @@ exports.createBusinessType = catchAsyncFunc(async(req,res, next)=>{
     status: 'success',
     data
   });
-})
+});
 
 exports.getAllBusinessTypes = factory.getAll(BusinessType);
 
