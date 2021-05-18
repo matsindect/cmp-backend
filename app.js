@@ -32,6 +32,7 @@ var whitelist = [
   'http://localhost',
   'https://constructionmarketuae.com',
   'https://constructmeplace.com',
+  'https://crimson-moon-246465.postman.co/',
   '*'
 ];
 var corsOptions = {

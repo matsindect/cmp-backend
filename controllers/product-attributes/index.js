@@ -12,7 +12,7 @@ const removeSpace = item => {
 exports.createProductAttribute = catchAsyncFunc(async(req,res, next)=>{
     let data;
   if (req.body._id != null || req.body._id != undefined) {
-    console.log(req.body._id);
+    // console.log(req.body._id);
     data = await ProductAttribute.findByIdAndUpdate({ _id: req.body.id }, req.body, {
       new: true,
       runValidators: true

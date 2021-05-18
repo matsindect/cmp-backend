@@ -63,7 +63,10 @@ exports.getUsers = catchAsyncFunc(async (req, res, next) => {
     .fieldSort()
     .paginate();
 
-  const users = await apiHelpers.query;
+  const users = await apiHelpers.query.populate({
+    path: 'business_types',
+    select: 'name '
+  });
 
   res.status(200).send({
     status: 'Success',

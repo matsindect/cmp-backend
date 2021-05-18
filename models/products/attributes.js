@@ -7,26 +7,12 @@ const attributesSchema = new mongoose.Schema(
     name: {
       type: String
     },
-    unit: {
-      type: String
-    },
     description: {
       type: String
     },
     slug: {
       type: String
     },
-    categories:[
-      {
-        value:{
-          type:types.ObjectId,
-          ref:'ProductCategory'
-        },
-        label:{
-          type:String
-        }
-      }
-    ],
     order: {
       type: Number,
       required: true,
@@ -48,31 +34,32 @@ const attributesSchema = new mongoose.Schema(
     },
     sectors: [
       {
-        value:{
           type:types.ObjectId,
           ref:'Sector'
-        },
-        label:{
-          type:String
-        }
       }
     ],
-    variants:[{
-      label:{
-        type: String
-      }
-    }],
-    parent_attributes: [
+    business_type: [
       {
         type: types.ObjectId,
-        ref: 'Attributes'
+        ref: 'BusinessType'
       }
     ],
-    order: {
-      type: Number,
-      required: true,
-      min: 0
-    },
+    product_category: [
+      {
+        type: types.ObjectId,
+        ref: 'ProductCategory'
+      }
+    ],
+    service: [
+      {
+        type: types.ObjectId,
+        ref: 'Service'
+      }
+    ],
+    variants:[ {
+        type: String
+      }],
+    
     is_active: {
       type: Boolean,
       default: true,

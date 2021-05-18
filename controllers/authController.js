@@ -32,7 +32,7 @@ const handshakeToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsyncFunc(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const newUser = await User.create(req.body);
   handshakeToken(newUser, 201, res);
 });
@@ -44,7 +44,10 @@ exports.login = catchAsyncFunc(async (req, res, next) => {
     next(new AppError('Please provide email and password', 400));
   }
 
-  const user = await User.findOne({ 'data.email': email }).select('+password');
+  const user = await User.findOne({ 'data.email': email }).select('+password').populate({
+    path: 'business_types',
+    select: 'name _id'
+  });
 
   if (!user || !(await user.comparePassword(password, user.password))) {
     return next(new AppError('Incorrect Password or Email', 401));

@@ -7,7 +7,7 @@ router
   .route('/')
   .post(
     authController.protect,
-    // authController.restrictTo('admin'),
+    authController.restrictTo('admin'),
     BusinessTypeController.createBusinessType
   )
   .get(
@@ -22,7 +22,7 @@ router
     authController.protect,
     // authController.restrictTo('admin'),
     BusinessTypeController.getOneBusinessType
-  )
+  ).patch(authController.protect, BusinessTypeController.updateBusinessType)
   .delete(
     authController.protect,
     // authController.restrictTo('admin'),

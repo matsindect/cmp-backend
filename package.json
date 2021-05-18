@@ -2,7 +2,7 @@
   "name": "server",
   "version": "1.0.0",
   "description": "the server side",
-  "main": "server.js",
+  "main": "CMPserver.js",
   "dependencies": {
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
@@ -46,9 +46,9 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "nodemon server.js",
-    "start:prod": "NODE_ENV = production nodemon server.js",
-    "debug": "ndb server.js"
+    "start": "nodemon CMPserver.js",
+    "start:prod": "NODE_ENV = production nodemon CMPserver.js",
+    "debug": "ndb CMPserver.js"
   },
   "author": "Clive",
   "license": "ISC"

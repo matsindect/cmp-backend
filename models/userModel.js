@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const types = Schema.Types;
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 let SALT_WORK_FACTOR = 12;
@@ -29,6 +31,12 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user', 'customer', 'store-manager', 'accounts-admin'],
     default: 'user'
   },
+  business_types: [
+    {
+      type: types.ObjectId,
+      ref: 'BusinessType'
+    }
+  ],
   user_passwordChangedAt: Date,
 
   data: {

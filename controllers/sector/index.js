@@ -40,26 +40,108 @@ exports.resizeIcon = catchAsyncFunc(async (req, res, next) => {
 });
 
 exports.createSector = catchAsyncFunc(async (req, res, next) => {
-  let data;
-  if (req.body._id != null || req.body._id != undefined) {
-    data = await Sectors.findByIdAndUpdate({ _id: req.body.id }, req.body, {
-      new: true,
-      runValidators: true
-    });
-  } else {
-    data = await Sectors.create(req.body);
-  }
+  
+    if (req.body.images) {
+      let images = [];
+      await Promise.all(
+        req.body.images.map(async (file, i) => {
+          if (file.url.startsWith('sectors/')) {
+            images.push(file);
+          } else {
+            const filename = `sectors/${removeSpace(
+              req.body.name
+            )}-${Date.now()}-${i + 1}.jpeg`;
+            var image = file.url.replace(/^data:.+;base64,/, '');
+            var imageeBuffer = new Buffer.from(image, 'base64');
+            await sharp(imageeBuffer)
+              .resize(2000, 1333)
+              .toFormat('jpeg')
+              .jpeg({ quality: 90 })
+              .toFile(`public/${filename}`);
 
-  res.status(201).send({
+            file.url = filename;
+            images.push(file);
+          }
+        })
+      );
+      req.body.images = images;
+    }
+    let data = await Sectors.create(req.body);
+    res.status(201).send({
     status: 'success',
     data
   });
 });
 
-exports.getAllSectors = factory.getAll(Sectors);
+exports.getAllSectors =catchAsyncFunc(async (req, res, next) => {
+  let filter = { active: true };
+  const tax_terms = new APIresourceFunc(Sectors.find(filter), req.query)
+    .AdvancedFilter()
+    .sort()
+    .fieldSort()
+    .paginate();
 
-exports.getOneSector = factory.getOne(Sectors);
+  const data = await tax_terms.query.populate({
+    path:'parent',
+    select: 'name _id'
+  }).populate({
+    path:'business_types',
+    select: 'name _id'
+  });
+  // console.log(data);
+  res.status(200).send({
+    status: 'Success',
+    results: data.length,
+    data
+  });
+});;
 
-exports.updateSector = factory.updateOne(Sectors);
+exports.getOneSector = factory.getOne(Sectors, {
+  path:'business_types',
+  select: 'name _id'
+});
+
+exports.updateSector =  catchAsyncFunc(async (req, res, next) => {
+  if (req.body.images) {
+    let images = [];
+    await Promise.all(
+      req.body.images.map(async (file, i) => {
+        if (file.url.startsWith('sectors/')) {
+          images.push(file);
+        } else {
+          const filename = `sectors/${removeSpace(
+            req.body.name
+          )}-${Date.now()}-${i + 1}.jpeg`;
+          var image = file.url.replace(/^data:.+;base64,/, '');
+          var imageeBuffer = new Buffer.from(image, 'base64');
+          await sharp(imageeBuffer)
+            .resize(2000, 1333)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`public/${filename}`);
+
+          file.url = filename;
+          images.push(file);
+        }
+      })
+    );
+    req.body.images = images;
+  }
+  const doc = await Sectors.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  });
+
+  if (!doc) {
+    return next(new AppError('There is no document with that id', 404));
+  }
+
+  res.status(200).send({
+    status: 'Success',
+    data: {
+      doc
+    }
+  });
+});;
 
 exports.deleteSector = factory.deleteOne(Sectors);

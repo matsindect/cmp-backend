@@ -22,7 +22,7 @@ router
     authController.protect,
     // authController.restrictTo('admin'),
     sectorController.getOneSector
-  )
+  ).patch(authController.protect, sectorController.updateSector)
   .delete(
     authController.protect,
     // authController.restrictTo('admin'),
