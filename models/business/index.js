@@ -35,35 +35,20 @@ const BusinessTypeSchema = new mongoose.Schema(
     },
     service_category: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'ServiceSategory'
-        },
-        label: {
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'ServiceSategory'
       }
     ],
     product_category: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'ProductSategory'
-        },
-        label: {
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'ProductSategory'
       }
     ],
     parent: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'BusinessType'
-        },
-        label: {
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'BusinessType'
       }
     ],
     active: {

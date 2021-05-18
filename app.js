@@ -44,7 +44,7 @@ var corsOptions = {
   }
 };
 
-server.use(cors(corsOptions));
+// server.use(cors(corsOptions));
 // http security
 server.use(helmet());
 if (process.env.NNODE_ENV === 'development') {

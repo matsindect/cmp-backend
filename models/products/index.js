@@ -41,12 +41,10 @@ const productSchema = new mongoose.Schema(
         key: {
           type: String
         },
-        value: [
-          {
-            type: String
-          }
-        ],
         unit: {
+          type: String
+        },
+        value: {
           type: String
         }
       }
@@ -76,35 +74,20 @@ const productSchema = new mongoose.Schema(
     ],
     product_categories: [
       {
-        value:{
-          type:types.ObjectId,
-          ref:'ProductCategory'
-        },
-        label:{
-          type:String
-        }
+        type: types.ObjectId,
+        ref: 'ProductCategory'
       }
     ],
     tags: [
       {
-        value:{
-          type:types.ObjectId,
-          ref:'Tags'
-        },
-        label:{
-          type:String
-        }
+        type: types.ObjectId,
+        ref: 'Tags'
       }
     ],
     sectors: [
       {
-        value:{
-          type:types.ObjectId,
-          ref:'Sector'
-        },
-        label:{
-          type:String
-        }
+        type: types.ObjectId,
+        ref: 'Sector'
       }
     ],
     origin: {

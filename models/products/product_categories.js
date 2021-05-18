@@ -16,13 +16,8 @@ const productCategorySchema = new mongoose.Schema(
     },
     sectors: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'Sector'
-        },
-        label: {
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'Sector'
       }
     ],
     order: {
@@ -58,13 +53,8 @@ const productCategorySchema = new mongoose.Schema(
     ],
     business_types: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'BusinessType'
-        },
-        label: {
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'BusinessType'
       }
     ],
     order: {
