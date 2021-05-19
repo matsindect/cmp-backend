@@ -109,7 +109,7 @@ exports.createSector = catchAsyncFunc(async (req, res, next) => {
       }
     });
   } else {
-    console.log(req.body);
+    // console.log(req.body);
     if (req.body.parent) {
       let parent = [];
       req.body.parent.map(item => {

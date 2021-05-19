@@ -17,7 +17,7 @@ const removeSpace = item => {
 exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   //Get fields
   let profile = await Profile.findOne({ user: req.user.id });
-  var user= await User.findById(req.user.id)
+  var user = await User.findById(req.user.id);
   if (profile) {
     //Update
 
@@ -29,13 +29,31 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     if (req.body.fax) profile.company.fax = req.body.company.fax;
     if (req.body.website) profile.company.website = req.body.company.website;
     if (req.body.email) profile.company.email = req.body.company.email;
-    if (req.body.business_types){
+    if (req.body.business_types) {
       req.body.business_types.forEach(element => {
-        if(!user.business_types.includes(String(element))){
-          user.business_types.push(element);
+        if (!user.business_types.includes(String(element.value))) {
+          user.business_types.push(element.value);
         }
       });
-      await user.save()
+      await user.save();
+    }
+    if (req.body.services) {
+      let services = [];
+      req.body.services.map(item => {
+        services.push(item.value);
+        if (services.length === req.body.services.length) {
+          req.body.services = services;
+        }
+      });
+    }
+    if (req.body.sectors) {
+      let sectors = [];
+      req.body.sectors.map(item => {
+        sectors.push(item.value);
+        if (sectors.length === req.body.sectors.length) {
+          req.body.sectors = sectors;
+        }
+      });
     }
     if (req.body.logo) {
       if (req.body.logo.startsWith('profile-logo/')) {
@@ -160,13 +178,31 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     if (profile) {
       return next(new AppError('Company name already taken', 400));
     }
-    if (req.body.businesstype){
+    if (req.body.services) {
+      let services = [];
+      req.body.services.map(item => {
+        services.push(item.value);
+        if (services.length === req.body.services.length) {
+          req.body.services = services;
+        }
+      });
+    }
+    if (req.body.sectors) {
+      let sectors = [];
+      req.body.sectors.map(item => {
+        sectors.push(item.value);
+        if (sectors.length === req.body.sectors.length) {
+          req.body.sectors = sectors;
+        }
+      });
+    }
+    if (req.body.businesstype) {
       req.body.company.businesstype.forEach(element => {
-        if(!user.businesstype.includes(String(element))){
+        if (!user.businesstype.includes(String(element))) {
           user.businesstype.push(element);
         }
       });
-      await user.save()
+      await user.save();
     }
     req.body.user = req.user.id;
     //save Profile
