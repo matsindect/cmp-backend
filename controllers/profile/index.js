@@ -17,7 +17,7 @@ const removeSpace = item => {
 exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   //Get fields
   let profile = await Profile.findOne({ user: req.user.id });
-
+  var user= await User.findById(req.user.id)
   if (profile) {
     //Update
 
@@ -29,8 +29,14 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     if (req.body.fax) profile.company.fax = req.body.company.fax;
     if (req.body.website) profile.company.website = req.body.company.website;
     if (req.body.email) profile.company.email = req.body.company.email;
-    if (req.body.businesstype)
-      profile.company.businesstype = req.body.company.businesstype;
+    if (req.body.business_types){
+      req.body.business_types.forEach(element => {
+        if(!user.business_types.includes(String(element))){
+          user.business_types.push(element);
+        }
+      });
+      await user.save()
+    }
     if (req.body.logo) {
       if (req.body.logo.startsWith('profile-logo/')) {
         profile.logo = req.body.logo;
@@ -73,7 +79,6 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
         profile.license = filename;
       }
     }
-    if (req.body.email) profile.company.email = req.body.email;
     if (req.body.images) {
       let images = [];
       await Promise.all(
@@ -146,7 +151,7 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     //Create
 
     let profile = await Profile.findOne({
-      slug: slugify(req.body.name, {
+      slug: slugify(req.body.company.name, {
         replacement: '-',
         remove: /[*+~.()'"!:@]/g,
         lower: true
@@ -154,6 +159,14 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     });
     if (profile) {
       return next(new AppError('Company name already taken', 400));
+    }
+    if (req.body.businesstype){
+      req.body.company.businesstype.forEach(element => {
+        if(!user.businesstype.includes(String(element))){
+          user.businesstype.push(element);
+        }
+      });
+      await user.save()
     }
     req.body.user = req.user.id;
     //save Profile

@@ -19,12 +19,7 @@ const productSchema = new mongoose.Schema(
       type: String
     },
     product_pricing: {
-      currency: {
-        type: String
-      },
-      price: {
-        type: String
-      }
+      type: String
     },
     product_location: {
       type: {
@@ -42,9 +37,11 @@ const productSchema = new mongoose.Schema(
           type: String
         },
         unit: {
+          //selected by the user
           type: String
         },
         value: {
+          // selected by the user
           type: String
         }
       }
@@ -78,6 +75,12 @@ const productSchema = new mongoose.Schema(
         ref: 'ProductCategory'
       }
     ],
+    business_types: [
+      {
+        type: types.ObjectId,
+        ref: 'BusinessType'
+      }
+    ],
     tags: [
       {
         type: types.ObjectId,
@@ -91,14 +94,7 @@ const productSchema = new mongoose.Schema(
       }
     ],
     origin: {
-      city: {
-        type: types.ObjectId,
-        ref: 'City'
-      },
-      country: {
-        type: types.ObjectId,
-        ref: 'Country'
-      }
+      type: String
     },
     reviews: [
       {

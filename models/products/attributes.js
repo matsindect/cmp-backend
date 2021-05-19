@@ -7,26 +7,12 @@ const attributesSchema = new mongoose.Schema(
     name: {
       type: String
     },
-    unit: {
-      type: String
-    },
     description: {
       type: String
     },
     slug: {
       type: String
     },
-    categories:[
-      {
-        value:{
-          type:types.ObjectId,
-          ref:'ProductCategory'
-        },
-        label:{
-          type:String
-        }
-      }
-    ],
     order: {
       type: Number,
       required: true,
@@ -48,31 +34,28 @@ const attributesSchema = new mongoose.Schema(
     },
     sectors: [
       {
-        value:{
-          type:types.ObjectId,
-          ref:'Sector'
-        },
-        label:{
-          type:String
-        }
+        type: types.ObjectId,
+        ref: 'Sector'
       }
     ],
-    variants:[{
-      label:{
-        type: String
-      }
-    }],
-    parent_attributes: [
+    business_type: [
       {
         type: types.ObjectId,
-        ref: 'Attributes'
+        ref: 'BusinessType'
       }
     ],
-    order: {
-      type: Number,
-      required: true,
-      min: 0
-    },
+    product_category: [
+      {
+        type: types.ObjectId,
+        ref: 'ProductCategory'
+      }
+    ],
+    variants: [
+      {
+        type: String
+      }
+    ],
+
     is_active: {
       type: Boolean,
       default: true,
@@ -84,7 +67,14 @@ const attributesSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
-
+attributesSchema.pre('save', function(next) {
+  this.slug = slugify(this.name, {
+    replacement: '-',
+    remove: /[*+~.()'"!:@]/g,
+    lower: true
+  });
+  next();
+});
 const Attributes = mongoose.model('Attributes', attributesSchema);
 
 module.exports = Attributes;

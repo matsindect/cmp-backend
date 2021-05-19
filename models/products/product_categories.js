@@ -20,6 +20,18 @@ const productCategorySchema = new mongoose.Schema(
         ref: 'Sector'
       }
     ],
+    child_category: [
+      {
+        type: types.ObjectId,
+        ref: 'ProductCategory'
+      }
+    ],
+    business_types: [
+      {
+        type: types.ObjectId,
+        ref: 'BusinessType'
+      }
+    ],
     order: {
       type: Number,
       required: true,
@@ -45,23 +57,6 @@ const productCategorySchema = new mongoose.Schema(
         ref: 'ProductCategory'
       }
     ],
-    child_categories: [
-      {
-        type: types.ObjectId,
-        ref: 'ProductCategory'
-      }
-    ],
-    business_types: [
-      {
-        type: types.ObjectId,
-        ref: 'BusinessType'
-      }
-    ],
-    order: {
-      type: Number,
-      required: true,
-      min: 0
-    },
     is_active: {
       type: Boolean,
       default: true,

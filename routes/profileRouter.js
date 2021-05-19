@@ -7,6 +7,7 @@ router
   .route('/')
   .post(authController.protect, profileController.createProfile)
   .get(authController.protect, profileController.getAllProfiles);
+  
 
 router
   .route('/:id')

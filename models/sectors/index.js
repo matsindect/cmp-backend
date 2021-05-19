@@ -25,10 +25,10 @@ const sectorSchema = new mongoose.Schema(
         ref: 'Sector'
       }
     ],
-    business: [
+    business_types: [
       {
         type: types.ObjectId,
-        ref: 'Category'
+        ref: 'BusinessType'
       }
     ],
     featuredImageId: {

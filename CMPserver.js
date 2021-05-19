@@ -25,7 +25,7 @@ mongoose
   });
 // START SERVER
 const port = process.env.PORT || 3000;
-const afroFarmServer = server.listen(port, () => {
+const afroFarmServer = server.listen(port, '0.0.0.0', () => {
   console.log(`cmp now running on port ${port}...`);
 });
 

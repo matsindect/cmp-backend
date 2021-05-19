@@ -56,13 +56,7 @@ const profileSchema = new mongoose.Schema(
       },
       email: {
         type: String
-      },
-      businesstype: [
-        {
-          type: types.ObjectId,
-          ref: 'BusinessType'
-        }
-      ]
+      }
     },
     logo: {
       type: String
@@ -93,47 +87,32 @@ const profileSchema = new mongoose.Schema(
     ],
     categories: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'Category'
-        },
-        label: {
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'Category'
       }
     ],
     sectors: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'Sector'
-        },
-        label: {
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'Sector'
       }
     ],
     services: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'Services'
-        },
-        label: {
-          type: String
-        },
-        path: []
+        type: types.ObjectId,
+        ref: 'Services'
+      }
+    ],
+    sub_services: [
+      {
+        type: types.ObjectId,
+        ref: 'Subservices'
       }
     ],
     products: [
       {
-        value: {
-          type: types.ObjectId,
-          ref: 'Products'
-        },
-        label: {
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'Products'
       }
     ],
     social: {
