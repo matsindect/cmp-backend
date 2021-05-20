@@ -16,6 +16,7 @@ const removeSpace = item => {
 };
 exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   //Get fields
+  console.log(req.body)
   let profile = await Profile.findOne({ user: req.user.id });
   var user = await User.findById(req.user.id);
   if (profile) {
