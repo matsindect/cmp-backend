@@ -17,7 +17,9 @@ const multerFilter = (req, file, cb) => {
     cb(new AppError('File not an image', 400), false);
   }
 };
-
+const removeSpace = item => {
+  return item.replace(/\s/g, '-');
+};
 const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter
@@ -72,41 +74,109 @@ exports.createProduct = catchAsyncFunc(async (req, res, next) => {
   const productFields = {};
   productFields.user = req.user.id;
   if (req.body.product_name) productFields.product_name = req.body.product_name;
+  if (req.body.description) productFields.description = req.body.description;
   if (req.body.product_name)
     productFields.slug = slugify(req.body.product_name, {
       replacement: '-',
       remove: /[*+~.()'"!:@]/g,
       lower: true
     });
-  if (req.body.quantity) productFields.quantity = req.body.quantity;
-  if (req.body.origin) productFields.origin = req.body.origin;
-  if (req.body.product_pricing)
-    productFields.product_pricing = req.body.product_pricing;
-  if (req.body.location) productFields.product_location = req.body.location;
-  if (req.body.product_attributes) {
-    productFields.product_attributes = req.body.product_attributes;
-    console.log(req.body.product_attributes);
-  }
-
-  if (req.body.images) productFields.images = req.body.images;
-
-  if (req.body.products_catalogue)
-    productFields.products_catalogue = req.body.products_catalogue;
-
   if (req.body.sectors) {
-    req.body.sectors.forEach(sector => {
-      productFields.sectors.push(sector);
+    let sectors = [];
+    req.body.sectors.map(item => {
+      if (item.value) {
+        sectors.push(item.value);
+      } else {
+        sectors.push(item._id);
+      }
+
+      if (sectors.length === req.body.sectors.length) {
+        productFields.sectors = sectors;
+      }
+    });
+  }
+  if (req.body.product_attributes) {
+    let product_attributes = [];
+    req.body.product_attributes.map(item => {
+      if (item.value) {
+        product_attributes.push(item.value);
+      } else {
+        product_attributes.push(item._id);
+      }
+      if (product_attributes.length === req.body.product_attributes.length) {
+        productFields.product_attributes = product_attributes;
+      }
     });
   }
   if (req.body.product_categories) {
-    req.body.product_categories.forEach(category => {
-      productFields.product_categories.push(category);
+    let product_categories = [];
+    req.body.product_categories.map(item => {
+      if (item.value) {
+        product_categories.push(item.value);
+      } else {
+        product_categories.push(item._id);
+      }
+      if (product_categories.length === req.body.product_categories.length) {
+        productFields.product_categories = product_categories;
+      }
     });
   }
+  if (req.body.business_types) {
+    let business_types = [];
+    req.body.business_types.map(item => {
+      if (item.value) {
+        business_types.push(item.value);
+      } else {
+        business_types.push(item._id);
+      }
+
+      if (business_types.length === req.body.business_types.length) {
+        productFields.business_types = business_types;
+      }
+    });
+  }
+  if (req.body.categories) {
+    let categories = [];
+    req.body.categories.map(item => {
+      if (item.value) {
+        categories.push(item.value);
+      } else {
+        categories.push(item._id);
+      }
+      if (categories.length === req.body.categories.length) {
+        productFields.categories = categories;
+      }
+    });
+  }
+  if (req.body.images) {
+    let images = [];
+    await Promise.all(
+      req.body.images.map(async (file, i) => {
+        if (file.url.startsWith('products/')) {
+          images.push(file);
+        } else {
+          const filename = `products/${removeSpace(
+            req.body.product_name
+          )}-${Date.now()}-${i + 1}.jpeg`;
+          var image = file.url.replace(/^data:.+;base64,/, '');
+          var imageeBuffer = new Buffer.from(image, 'base64');
+          await sharp(imageeBuffer)
+            .resize(2000, 1333)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`public/${filename}`);
+
+          file.url = filename;
+          images.push(file);
+        }
+      })
+    );
+    productFields.images = images;
+  }
+
   let products = await Product.findOne({ _id: req.body._id });
 
   if (products) {
-    console.log(products);
     let data = await Product.findByIdAndUpdate(
       req.body._id,
       { $set: productFields },
@@ -128,8 +198,69 @@ exports.createProduct = catchAsyncFunc(async (req, res, next) => {
   }
 });
 
-exports.getAllProducts = factory.getAll(Product);
+exports.getAllProducts = catchAsyncFunc(async (req, res, next) => {
+  let query = Product.find();
 
-exports.getOneProduct = factory.getOne(Product);
+  const data = await query
+    .populate({
+      path: 'sectors',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'business_types',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'product_categories',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'categories',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'product_attributes'
+    });
+
+  if (!data) {
+    return next(new AppError('There is no dataument with that id', 404));
+  }
+  res.status(200).send({
+    status: 'Success',
+    data
+  });
+});
+
+exports.getOneProduct = catchAsyncFunc(async (req, res, next) => {
+  let query = Product.findById(req.params.id);
+
+  const data = await query
+    .populate({
+      path: 'sectors',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'business_types',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'product_categories',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'categories',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'product_attributes'
+    });
+  if (!data) {
+    return next(new AppError('There is no dataument with that id', 404));
+  }
+  res.status(200).send({
+    status: 'Success',
+    data
+  });
+});
 
 exports.delleteProduct = factory.deleteOne(Product);

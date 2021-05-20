@@ -16,6 +16,7 @@ const removeSpace = item => {
 };
 exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   //Get fields
+  console.log(req.body);
   let profile = await Profile.findOne({ user: req.user.id });
   var user = await User.findById(req.user.id);
   if (profile) {
@@ -320,25 +321,41 @@ exports.getAllProfiles = catchAsyncFunc(async (req, res, next) => {
 });
 
 exports.getProfile = catchAsyncFunc(async (req, res, next) => {
-  let data = await Profile.findById(req.params.id);
-  // .populate('sectors')
-  // .populate('business_type')
-  // .populate('categories')
-  // .populate('services')
-  // .populate('city')
-  // .populate('country');
+  if (req.params.id === 'me') {
+    let data = await Profile.findOne({ user: req.user.id });
 
-  var license = await pdf2base64(`public/${data.license}`);
+    // var license = await pdf2base64(`public/${data.license}`);
 
-  data.license = `data:application/octet-stream;base64,${license}`;
+    // data.license = `data:application/octet-stream;base64,${license}`;
 
-  if (!data) {
-    return next(new AppError('There is no dataument with that id', 404));
+    if (!data) {
+      return next(new AppError('There is no dataument with that id', 404));
+    }
+    res.status(200).send({
+      status: 'Success',
+      data
+    });
+  } else {
+    let data = await Profile.findById(req.params.id);
+    // .populate('sectors')
+    // .populate('business_type')
+    // .populate('categories')
+    // .populate('services')
+    // .populate('city')
+    // .populate('country');
+
+    var license = await pdf2base64(`public/${data.license}`);
+
+    data.license = `data:application/octet-stream;base64,${license}`;
+
+    if (!data) {
+      return next(new AppError('There is no dataument with that id', 404));
+    }
+    res.status(200).send({
+      status: 'Success',
+      data
+    });
   }
-  res.status(200).send({
-    status: 'Success',
-    data
-  });
 });
 
 //@route    Delete api/v1/profile/
