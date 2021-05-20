@@ -15,7 +15,12 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
     if (req.body.business_type) {
       let business_type = [];
       req.body.business_type.map(item => {
-        business_type.push(item.value);
+        if (item.value) {
+          business_type.push(item.value);
+        } else {
+          business_type.push(item._id);
+        }
+
         if (business_type.length === req.body.business_type.length) {
           req.body.business_type = business_type;
         }
@@ -24,7 +29,12 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
     if (req.body.sectors) {
       let sectors = [];
       req.body.sectors.map(item => {
-        sectors.push(item.value);
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
+
         if (sectors.length === req.body.sectors.length) {
           req.body.sectors = sectors;
         }
@@ -33,7 +43,12 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
     if (req.body.product_category) {
       let product_category = [];
       req.body.product_category.map(item => {
-        product_category.push(item.value);
+        if (item.value) {
+          product_category.push(item.value);
+        } else {
+          product_category.push(item._id);
+        }
+
         if (product_category.length === req.body.product_category.length) {
           req.body.product_category = product_category;
         }
@@ -77,7 +92,12 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
     if (req.body.business_type) {
       let business_type = [];
       req.body.business_type.map(item => {
-        business_type.push(item.value);
+        if (item.value) {
+          business_type.push(item.value);
+        } else {
+          business_type.push(item._id);
+        }
+
         if (business_type.length === req.body.business_type.length) {
           req.body.business_type = business_type;
         }
@@ -86,7 +106,12 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
     if (req.body.sectors) {
       let sectors = [];
       req.body.sectors.map(item => {
-        sectors.push(item.value);
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
+
         if (sectors.length === req.body.sectors.length) {
           req.body.sectors = sectors;
         }
@@ -95,7 +120,12 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
     if (req.body.product_category) {
       let product_category = [];
       req.body.product_category.map(item => {
-        product_category.push(item.value);
+        if (item.value) {
+          product_category.push(item.value);
+        } else {
+          product_category.push(item._id);
+        }
+
         if (product_category.length === req.body.product_category.length) {
           req.body.product_category = product_category;
         }

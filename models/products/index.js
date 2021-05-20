@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const types = Schema.Types;
+const slugify = require('slugify');
 
 const productSchema = new mongoose.Schema(
   {
@@ -12,53 +13,18 @@ const productSchema = new mongoose.Schema(
     product_name: {
       type: String
     },
-    quantity: {
-      type: Number
-    },
     slug: {
       type: String
     },
-    product_pricing: {
-      type: String
-    },
-    product_location: {
-      type: {
-        type: String,
-        default: 'Point',
-        enum: ['Point']
-      },
-      coordinates: [Number],
-      address: String,
-      description: String
-    },
     product_attributes: [
       {
-        key: {
-          type: String
-        },
-        unit: {
-          //selected by the user
-          type: String
-        },
-        value: {
-          // selected by the user
-          type: String
-        }
+        type: types.ObjectId,
+        ref: 'Attributes'
       }
     ],
     description: {
       type: String
     },
-    products_catalogue: [
-      {
-        url: { type: String },
-        type: {
-          type: String,
-          enum: ['image', 'video', 'gif'],
-          default: 'image'
-        }
-      }
-    ],
     images: [
       {
         url: { type: String },
@@ -93,15 +59,6 @@ const productSchema = new mongoose.Schema(
         ref: 'Sector'
       }
     ],
-    origin: {
-      type: String
-    },
-    reviews: [
-      {
-        type: types.ObjectId,
-        ref: 'Reviews'
-      }
-    ],
     active: {
       type: Boolean,
       default: true,
@@ -113,6 +70,15 @@ const productSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
+
+productSchema.pre('save', function(next) {
+  this.slug = slugify(this.product_name, {
+    replacement: '-',
+    remove: /[*+~.()'"!:@]/g,
+    lower: true
+  });
+  next();
+});
 
 const Product = mongoose.model('Product', productSchema);
 

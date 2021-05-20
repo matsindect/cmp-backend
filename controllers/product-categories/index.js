@@ -12,30 +12,45 @@ const removeSpace = item => {
 exports.createProductCategory = catchAsyncFunc(async (req, res, next) => {
   let data;
   if (req.body._id != null || req.body._id != undefined) {
-    if (req.body.parent) {
-      let parent = [];
-      req.body.parent.map(item => {
-        parent.push(item.value);
-        if (parent.length === req.body.parent.length) {
-          req.body.parent = parent;
+    if (req.body.business_types) {
+      let business_types = [];
+      req.body.business_types.map(item => {
+        if (item.value) {
+          business_types.push(item.value);
+        } else {
+          business_types.push(item._id);
+        }
+
+        if (business_types.length === req.body.business_types.length) {
+          req.body.business_types = business_types;
         }
       });
     }
     if (req.body.sectors) {
       let sectors = [];
       req.body.sectors.map(item => {
-        sectors.push(item.value);
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
+
         if (sectors.length === req.body.sectors.length) {
           req.body.sectors = sectors;
         }
       });
     }
-    if (req.body.business_types) {
-      let business_types = [];
-      req.body.business_types.map(item => {
-        business_types.push(item.value);
-        if (business_types.length === req.body.business_types.length) {
-          req.body.business_types = business_types;
+    if (req.body.parent) {
+      let parent = [];
+      req.body.parent.map(item => {
+        if (item.value) {
+          parent.push(item.value);
+        } else {
+          parent.push(item._id);
+        }
+
+        if (parent.length === req.body.parent.length) {
+          req.body.parent = parent;
         }
       });
     }
@@ -73,30 +88,45 @@ exports.createProductCategory = catchAsyncFunc(async (req, res, next) => {
       }
     );
   } else {
-    if (req.body.parent) {
-      let parent = [];
-      req.body.parent.map(item => {
-        parent.push(item.value);
-        if (parent.length === req.body.parent.length) {
-          req.body.parent = parent;
+    if (req.body.business_types) {
+      let business_types = [];
+      req.body.business_types.map(item => {
+        if (item.value) {
+          business_types.push(item.value);
+        } else {
+          business_types.push(item._id);
+        }
+
+        if (business_types.length === req.body.business_types.length) {
+          req.body.business_types = business_types;
         }
       });
     }
     if (req.body.sectors) {
       let sectors = [];
       req.body.sectors.map(item => {
-        sectors.push(item.value);
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
+
         if (sectors.length === req.body.sectors.length) {
           req.body.sectors = sectors;
         }
       });
     }
-    if (req.body.business_types) {
-      let business_types = [];
-      req.body.business_types.map(item => {
-        business_types.push(item.value);
-        if (business_types.length === req.body.business_types.length) {
-          req.body.business_types = business_types;
+    if (req.body.parent) {
+      let parent = [];
+      req.body.parent.map(item => {
+        if (item.value) {
+          parent.push(item.value);
+        } else {
+          parent.push(item._id);
+        }
+
+        if (parent.length === req.body.parent.length) {
+          req.body.parent = parent;
         }
       });
     }
