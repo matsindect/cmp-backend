@@ -154,11 +154,16 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
 
     //social
 
-    if (req.body.youtube) profile.social.youtube = req.body.youtube;
-    if (req.body.twitter) profile.social.twitter = req.body.twitter;
-    if (req.body.facebook) profile.social.facebook = req.body.facebook;
-    if (req.body.linkedin) profile.social.linkedin = req.body.linkedin;
-    if (req.body.instagram) profile.social.instagram = req.body.instagram;
+    if (req.body.social.youtube)
+      profile.social.youtube = req.body.social.youtube;
+    if (req.body.social.twitter)
+      profile.social.twitter = req.body.social.twitter;
+    if (req.body.social.facebook)
+      profile.social.facebook = req.body.social.facebook;
+    if (req.body.social.linkedin)
+      profile.social.linkedin = req.body.social.linkedin;
+    if (req.body.social.instagram)
+      profile.social.instagram = req.body.social.instagram;
 
     var doc = await profile.save();
 

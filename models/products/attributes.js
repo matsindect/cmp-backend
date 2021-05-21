@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const types = Schema.Types;
+const slugify = require('slugify');
 
 const attributesSchema = new mongoose.Schema(
   {
@@ -52,7 +53,9 @@ const attributesSchema = new mongoose.Schema(
     ],
     variants: [
       {
-        type: String
+        label: {
+          type: String
+        }
       }
     ],
 

@@ -2,22 +2,105 @@ const Service = require('../../models/services');
 const catchAsyncFunc = require('../../utils/catchAsyncFuncs');
 const AppError = require('../../utils/appError');
 const factory = require('./../handleFactory');
-const AAPIresourceFunc= require('../../utils/APIresourceFunc')
+const AAPIresourceFunc = require('../../utils/APIresourceFunc');
 const sharp = require('sharp');
 const fs = require('fs');
 
 const removeSpace = item => {
   return item.replace(/\s/g, '-');
 };
-exports.createService = catchAsyncFunc(async(req,res, next)=>{
-    let data;
+exports.createService = catchAsyncFunc(async (req, res, next) => {
+  let data;
   if (req.body._id != null || req.body._id != undefined) {
-    console.log(req.body._id);
+    if (req.body.business_types) {
+      let business_types = [];
+      req.body.business_types.map(item => {
+        if (item.value) {
+          business_types.push(item.value);
+        } else {
+          business_types.push(item._id);
+        }
+
+        if (business_types.length === req.body.business_types.length) {
+          req.body.business_types = business_types;
+        }
+      });
+    }
+    if (req.body.sectors) {
+      let sectors = [];
+      req.body.sectors.map(item => {
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
+
+        if (sectors.length === req.body.sectors.length) {
+          req.body.sectors = sectors;
+        }
+      });
+    }
+    if (req.body.parent) {
+      let parent = [];
+      req.body.parent.map(item => {
+        if (item.value) {
+          parent.push(item.value);
+        } else {
+          parent.push(item._id);
+        }
+
+        if (parent.length === req.body.parent.length) {
+          req.body.parent = parent;
+        }
+      });
+    }
     data = await Service.findByIdAndUpdate({ _id: req.body.id }, req.body, {
       new: true,
       runValidators: true
     });
   } else {
+    if (req.body.business_types) {
+      let business_types = [];
+      req.body.business_types.map(item => {
+        if (item.value) {
+          business_types.push(item.value);
+        } else {
+          business_types.push(item._id);
+        }
+
+        if (business_types.length === req.body.business_types.length) {
+          req.body.business_types = business_types;
+        }
+      });
+    }
+    if (req.body.sectors) {
+      let sectors = [];
+      req.body.sectors.map(item => {
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
+
+        if (sectors.length === req.body.sectors.length) {
+          req.body.sectors = sectors;
+        }
+      });
+    }
+    if (req.body.parent) {
+      let parent = [];
+      req.body.parent.map(item => {
+        if (item.value) {
+          parent.push(item.value);
+        } else {
+          parent.push(item._id);
+        }
+
+        if (parent.length === req.body.parent.length) {
+          req.body.parent = parent;
+        }
+      });
+    }
     if (req.body.images) {
       let images = [];
       await Promise.all(
@@ -50,7 +133,7 @@ exports.createService = catchAsyncFunc(async(req,res, next)=>{
     status: 'success',
     data
   });
-})
+});
 
 exports.getAllServices = catchAsyncFunc(async (req, res, next) => {
   let filter = { is_active: true };
@@ -60,7 +143,19 @@ exports.getAllServices = catchAsyncFunc(async (req, res, next) => {
     .fieldSort()
     .paginate();
 
-  const data = await tax_terms.query;
+  const data = await tax_terms.query
+    .populate({
+      path: 'parent',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'business_types',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'sectors',
+      select: 'name _id'
+    });
   // console.log(data);
   res.status(200).send({
     status: 'Success',

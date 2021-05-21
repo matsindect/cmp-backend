@@ -54,6 +54,7 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
+
     if (req.body.images) {
       let images = [];
       await Promise.all(
