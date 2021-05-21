@@ -40,6 +40,7 @@ exports.resizeIcon = catchAsyncFunc(async (req, res, next) => {
 });
 
 exports.createSector = catchAsyncFunc(async (req, res, next) => {
+  console.log(req.body);
   if (req.body._id) {
     if (req.body.business_types) {
       let business_types = [];
