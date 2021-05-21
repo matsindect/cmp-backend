@@ -71,6 +71,7 @@ exports.processImages = catchAsyncFunc(async (req, res, next) => {
 });
 
 exports.createProduct = catchAsyncFunc(async (req, res, next) => {
+  console.log(req.body)
   const productFields = {};
   productFields.user = req.user.id;
   if (req.body.product_name) productFields.product_name = req.body.product_name;
