@@ -23,6 +23,7 @@ const serviceRouter = require('./routes/serviceRouter');
 const productAttributeRouter = require('./routes/productAttributesrouter');
 const productCatergoriesRouter = require('./routes/productCattegoriesRouter');
 const analyticsRouter = require('./routes/analyticsRouter');
+const postRouter = require('./routes/postRouter');
 
 const server = express();
 // Serving static files
@@ -83,6 +84,7 @@ server.use('/api/v1/services', serviceRouter);
 server.use('/api/v1/product-attributes', productAttributeRouter);
 server.use('/api/v1/product-categories', productCatergoriesRouter);
 server.use('/api/v1/analytics', analyticsRouter);
+server.use('/api/v1/posts', postRouter);
 
 server.all('*', (req, res, next) => {
   next(new AppError(`Cannot Find ${req.originalUrl} on this server`, 404));

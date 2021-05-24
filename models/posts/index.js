@@ -10,6 +10,10 @@ const postSchema = new mongoose.Schema(
       type: types.ObjectId,
       ref: 'User'
     },
+    product: {
+      type: types.ObjectId,
+      ref: 'ProductCategory'
+    },
     post_name: {
       type: String
     },
@@ -17,14 +21,15 @@ const postSchema = new mongoose.Schema(
       type: String
     },
     post_tattributes: [
-      {key:{
-        type: types.ObjectId,
-        ref: 'Attributes'
-      },
-      value:{
-        type: String
+      {
+        key: {
+          type: types.ObjectId,
+          ref: 'Attributes'
+        },
+        value: {
+          type: String
+        }
       }
-    }
     ],
     description: {
       type: String
@@ -75,6 +80,15 @@ const postSchema = new mongoose.Schema(
   }
 );
 
-const Product = mongoose.model('Product', postSchema);
+postSchema.pre('save', function(next) {
+  this.slug = slugify(this.name, {
+    replacement: '-',
+    remove: /[*+~.()'"!:@]/g,
+    lower: true
+  });
+  next();
+});
 
-module.exports = Product;
+const Post = mongoose.model('Post', postSchema);
+
+module.exports = Post;

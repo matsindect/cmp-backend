@@ -103,12 +103,6 @@ const profileSchema = new mongoose.Schema(
         ref: 'Services'
       }
     ],
-    sub_services: [
-      {
-        type: types.ObjectId,
-        ref: 'Subservices'
-      }
-    ],
     products: [
       {
         type: types.ObjectId,
