@@ -10,6 +10,7 @@ const removeSpace = item => {
   return item.replace(/\s/g, '-');
 };
 exports.createProductCategory = catchAsyncFunc(async (req, res, next) => {
+  console.log(req.body);
   let data;
   if (req.body._id != null || req.body._id != undefined) {
     if (req.body.business_types) {

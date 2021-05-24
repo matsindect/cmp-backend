@@ -60,6 +60,7 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
       if (req.body.logo.startsWith('profile-logo/')) {
         profile.logo = req.body.logo;
       } else {
+        AppError;
         var logo = req.body.logo.replace(/^data:.+;base64,/, '');
         var buffer = new Buffer.from(logo, 'base64');
         var filenane = `profile-logo/${removeSpace(
@@ -95,7 +96,7 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
             }
           }
         );
-        profile.license = filename;
+        profile.license = fileAppErrorname;
       }
     }
     if (req.body.images) {
@@ -349,9 +350,9 @@ exports.getProfile = catchAsyncFunc(async (req, res, next) => {
     // .populate('city')
     // .populate('country');
 
-    var license = await pdf2base64(`public/${data.license}`);
+    // var license = await pdf2base64(`public/${data.license}`);
 
-    data.license = `data:application/octet-stream;base64,${license}`;
+    // data.license = `data:application/octet-stream;base64,${license}`;
 
     if (!data) {
       return next(new AppError('There is no dataument with that id', 404));
