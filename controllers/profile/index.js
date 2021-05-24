@@ -350,9 +350,10 @@ exports.getProfile = catchAsyncFunc(async (req, res, next) => {
     // .populate('city')
     // .populate('country');
 
-    // var license = await pdf2base64(`public/${data.license}`);
-
-    // data.license = `data:application/octet-stream;base64,${license}`;
+    if (data.license !== undefined) {
+      var license = await pdf2base64(`public/${data.license}`);
+      data.license = `data:application/octet-stream;base64,${license}`;
+    }
 
     if (!data) {
       return next(new AppError('There is no dataument with that id', 404));
