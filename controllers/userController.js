@@ -78,7 +78,10 @@ exports.getUsers = catchAsyncFunc(async (req, res, next) => {
 });
 
 exports.getUser = catchAsyncFunc(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate({
+    path: 'business_types',
+    select: 'name '
+  });
   // const user = await User.findOne({user_name: req.params.user_name});
   if (!user) {
     return next(new AppError('There isno user with that id', 404));

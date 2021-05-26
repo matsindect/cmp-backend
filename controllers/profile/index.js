@@ -16,8 +16,17 @@ const removeSpace = item => {
 };
 exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   //Get fields
-  console.log(req.body);
-  let profile = await Profile.findOne({ user: req.user.id });
+  let profile = {};
+  if (
+    req.user.role === 'admin' &&
+    String(req.body.user) != String(req.user.id)
+  ) {
+    profile = await Profile.findOne({ user: req.body.user });
+  } else {
+    console.log('my profile');
+    profile = await Profile.findOne({ user: req.user.id });
+  }
+
   var user = await User.findById(req.user.id);
   if (profile) {
     //Update
@@ -349,9 +358,9 @@ exports.getProfile = catchAsyncFunc(async (req, res, next) => {
     // .populate('city')
     // .populate('country');
 
-    var license = await pdf2base64(`public/${data.license}`);
+    // var license = await pdf2base64(`public/${data.license}`);
 
-    data.license = `data:application/octet-stream;base64,${license}`;
+    // data.license = `data:application/octet-stream;base64,${license}`;
 
     if (!data) {
       return next(new AppError('There is no dataument with that id', 404));
