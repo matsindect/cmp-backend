@@ -17,13 +17,13 @@ const removeSpace = item => {
 exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   //Get fields
   let profile = {};
+  console.log(req.body);
   if (
     req.user.role === 'admin' &&
     String(req.body.user) != String(req.user.id)
   ) {
     profile = await Profile.findOne({ user: req.body.user });
   } else {
-    console.log('my profile');
     profile = await Profile.findOne({ user: req.user.id });
   }
 
@@ -68,12 +68,22 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
+    if (req.body.contact_person) {
+      let persons = [];
+      req.body.contact_person.map(item => {
+        persons.push(item.value);
+        if (persons.length === req.body.contact_person.length) {
+          profile.contact_person = persons;
+        }
+      });
+    }
     if (req.body.categories) {
       let categories = [];
       req.body.categories.map(item => {
         categories.push(item.value);
         if (categories.length === req.body.categories.length) {
-          req.body.categories = categories;
+          //req.body.categories = categories;
+          profile.categories = categories;
         }
       });
     }
