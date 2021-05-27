@@ -31,14 +31,17 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   if (profile) {
     //Update
 
-    if (req.body.name) profile.company.name = req.body.company.name;
-    if (req.body.about) profile.company.about = req.body.company.about;
-    if (req.body.location) profile.company.location = req.body.company.location;
-    if (req.body.address) profile.company.address = req.body.company.address;
-    if (req.body.tel) profile.company.tel = req.body.company.tel;
-    if (req.body.fax) profile.company.fax = req.body.company.fax;
-    if (req.body.website) profile.company.website = req.body.company.website;
-    if (req.body.email) profile.company.email = req.body.company.email;
+    if (req.body.company.name) profile.company.name = req.body.company.name;
+    if (req.body.company.about) profile.company.about = req.body.company.about;
+    if (req.body.company.location)
+      profile.company.location = req.body.company.location;
+    if (req.body.company.address)
+      profile.company.address = req.body.company.address;
+    if (req.body.company.tel) profile.company.tel = req.body.company.tel;
+    if (req.body.company.fax) profile.company.fax = req.body.company.fax;
+    if (req.body.company.website)
+      profile.company.website = req.body.company.website;
+    if (req.body.company.email) profile.company.email = req.body.company.email;
     if (req.body.business_types) {
       req.body.business_types.forEach(element => {
         if (!user.business_types.includes(String(element.value))) {
@@ -52,7 +55,7 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
       req.body.services.map(item => {
         services.push(item.value);
         if (services.length === req.body.services.length) {
-          req.body.services = services;
+          profile.services = services;
         }
       });
     }
@@ -61,10 +64,20 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
       req.body.sectors.map(item => {
         sectors.push(item.value);
         if (sectors.length === req.body.sectors.length) {
-          req.body.sectors = sectors;
+          profile.sectors = sectors;
         }
       });
     }
+    if (req.body.categories) {
+      let categories = [];
+      req.body.categories.map(item => {
+        categories.push(item.value);
+        if (categories.length === req.body.categories.length) {
+          req.body.categories = categories;
+        }
+      });
+    }
+
     if (req.body.logo) {
       if (req.body.logo.startsWith('profile-logo/')) {
         profile.logo = req.body.logo;
@@ -211,10 +224,19 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.businesstype) {
-      req.body.company.businesstype.forEach(element => {
-        if (!user.businesstype.includes(String(element))) {
-          user.businesstype.push(element);
+    if (req.body.categories) {
+      let categories = [];
+      req.body.categories.map(item => {
+        categories.push(item.value);
+        if (categories.length === req.body.categories.length) {
+          req.body.categories = categories;
+        }
+      });
+    }
+    if (req.body.business_types) {
+      req.body.business_types.forEach(element => {
+        if (!user.business_types.includes(String(element.value))) {
+          user.business_types.push(element.vale);
         }
       });
       await user.save();
@@ -336,7 +358,19 @@ exports.getAllProfiles = catchAsyncFunc(async (req, res, next) => {
 
 exports.getProfile = catchAsyncFunc(async (req, res, next) => {
   if (req.params.id === 'me') {
-    let data = await Profile.findOne({ user: req.user.id });
+    let data = await Profile.findOne({ user: req.user.id })
+      .populate({
+        path: 'services',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'sectors',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'parent',
+        select: 'name _id'
+      });
 
     // var license = await pdf2base64(`public/${data.license}`);
 

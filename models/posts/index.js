@@ -10,7 +10,7 @@ const postSchema = new mongoose.Schema(
       type: types.ObjectId,
       ref: 'User'
     },
-    product: {
+    product_id: {
       type: types.ObjectId,
       ref: 'ProductCategory'
     },
@@ -20,13 +20,16 @@ const postSchema = new mongoose.Schema(
     slug: {
       type: String
     },
+    featuredImageId: {
+      type: String
+    },
     post_tattributes: [
       {
-        key: {
+        value: {
           type: types.ObjectId,
           ref: 'Attributes'
         },
-        value: {
+        label: {
           type: String
         }
       }
@@ -48,6 +51,12 @@ const postSchema = new mongoose.Schema(
       {
         type: types.ObjectId,
         ref: 'ProductCategory'
+      }
+    ],
+    services: [
+      {
+        type: types.ObjectId,
+        ref: 'Service'
       }
     ],
     business_types: [

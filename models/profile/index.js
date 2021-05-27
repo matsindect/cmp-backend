@@ -100,7 +100,7 @@ const profileSchema = new mongoose.Schema(
     services: [
       {
         type: types.ObjectId,
-        ref: 'Services'
+        ref: 'Service'
       }
     ],
     products: [
