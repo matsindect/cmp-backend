@@ -17,17 +17,27 @@ const handleValidationDBError = err => {
 };
 // Development Error message
 const devEnvError = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack
-  });
+  res.locals.error = err;
+  if (err.status >= 100 && err.status < 600)
+    res.status(err.status).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack
+    });
+  else
+    res.status(500).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack
+    });
 };
 
 // Production error Message
 const prodEnvError = (err, res) => {
   if (err.isOperational) {
+    res.locals.error = err;
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message

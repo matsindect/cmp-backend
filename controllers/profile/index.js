@@ -82,6 +82,7 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
       if (req.body.logo.startsWith('profile-logo/')) {
         profile.logo = req.body.logo;
       } else {
+        AppError;
         var logo = req.body.logo.replace(/^data:.+;base64,/, '');
         var buffer = new Buffer.from(logo, 'base64');
         var filenane = `profile-logo/${removeSpace(
@@ -117,7 +118,7 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
             }
           }
         );
-        profile.license = filename;
+        profile.license = fileAppErrorname;
       }
     }
     if (req.body.images) {
