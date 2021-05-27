@@ -11,6 +11,7 @@ const removeSpace = item => {
 };
 exports.createPost = catchAsyncFunc(async (req, res, next) => {
   let data;
+  console.log(req.body);
   if (req.body._id != null || req.body._id != undefined) {
     if (req.body.business_types) {
       let business_types = [];
@@ -48,8 +49,8 @@ exports.createPost = catchAsyncFunc(async (req, res, next) => {
           if (file.url.startsWith('Posts/')) {
             images.push(file);
           } else {
-            const filename = `Posts/${removeSpace(
-              req.body.name
+            const filename = `posts/${removeSpace(
+              req.body.product_name
             )}-${Date.now()}-${i + 1}.jpeg`;
             var image = file.url.replace(/^data:.+;base64,/, '');
             var imageeBuffer = new Buffer.from(image, 'base64');
