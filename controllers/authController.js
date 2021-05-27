@@ -44,10 +44,12 @@ exports.login = catchAsyncFunc(async (req, res, next) => {
     next(new AppError('Please provide email and password', 400));
   }
 
-  const user = await User.findOne({ 'data.email': email }).select('+password').populate({
-    path: 'business_types',
-    select: 'name _id'
-  });
+  const user = await User.findOne({ 'data.email': email })
+    .select('+password')
+    .populate({
+      path: 'business_types',
+      select: 'name _id'
+    });
 
   if (!user || !(await user.comparePassword(password, user.password))) {
     return next(new AppError('Incorrect Password or Email', 401));
@@ -77,7 +79,11 @@ exports.protect = catchAsyncFunc(async (req, res, next) => {
   );
 
   // Check if user still exist
-  const currentUser = await User.findById(decodedtoken.id);
+  const currentUser = await User.findById(decodedtoken.id).populate({
+    path: 'business_types',
+    select: 'name '
+  });
+  // console.log(currentUser);
   if (!currentUser) {
     return new AppError(
       'User no longer exists, Please signup and get new token',
@@ -103,7 +109,10 @@ exports.verifyToken = catchAsyncFunc(async (req, res, next) => {
   );
 
   // Check if user still exist
-  const currentUser = await User.findById(decodedtoken.id);
+  const currentUser = await User.findById(decodedtoken.id).populate({
+    path: 'business_types',
+    select: 'name '
+  });
 
   const updatedAccessToken = signtoken(decodedtoken.id);
   // return [200, response];

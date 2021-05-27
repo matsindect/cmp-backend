@@ -88,7 +88,7 @@ const profileSchema = new mongoose.Schema(
     categories: [
       {
         type: types.ObjectId,
-        ref: 'Category'
+        ref: 'ProductCategory'
       }
     ],
     sectors: [
@@ -100,7 +100,7 @@ const profileSchema = new mongoose.Schema(
     services: [
       {
         type: types.ObjectId,
-        ref: 'Services'
+        ref: 'Service'
       }
     ],
     products: [
@@ -146,7 +146,11 @@ profileSchema.pre('save', function(next) {
   });
   next();
 });
-
+profileSchema.virtual('business_types', {
+  ref: 'User',
+  foreignField: '_id',
+  localField: 'user'
+});
 const Profile = mongoose.model('Profile', profileSchema);
 
 module.exports = Profile;

@@ -42,15 +42,43 @@ exports.createPost = catchAsyncFunc(async (req, res, next) => {
       });
     }
 
+    if (req.body.product_categories) {
+      let product_categories = [];
+      req.body.product_categories.map(item => {
+        if (item.value) {
+          product_categories.push(item.value);
+        } else {
+          product_categories.push(item._id);
+        }
+
+        if (product_categories.length === req.body.product_categories.length) {
+          req.body.product_categories = product_categories;
+        }
+      });
+    }
+    if (req.body.services) {
+      let services = [];
+      req.body.services.map(item => {
+        if (item.value) {
+          services.push(item.value);
+        } else {
+          services.push(item._id);
+        }
+
+        if (services.length === req.body.services.length) {
+          req.body.services = services;
+        }
+      });
+    }
     if (req.body.images) {
       let images = [];
       await Promise.all(
         req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('Posts/')) {
+          if (file.url.startsWith('posts/')) {
             images.push(file);
           } else {
             const filename = `posts/${removeSpace(
-              req.body.product_name
+              req.body.post_name
             )}-${Date.now()}-${i + 1}.jpeg`;
             var image = file.url.replace(/^data:.+;base64,/, '');
             var imageeBuffer = new Buffer.from(image, 'base64');
@@ -100,16 +128,43 @@ exports.createPost = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
+    if (req.body.product_categories) {
+      let product_categories = [];
+      req.body.product_categories.map(item => {
+        if (item.value) {
+          product_categories.push(item.value);
+        } else {
+          product_categories.push(item._id);
+        }
 
+        if (product_categories.length === req.body.product_categories.length) {
+          req.body.product_categories = product_categories;
+        }
+      });
+    }
+    if (req.body.services) {
+      let services = [];
+      req.body.services.map(item => {
+        if (item.value) {
+          services.push(item.value);
+        } else {
+          services.push(item._id);
+        }
+
+        if (services.length === req.body.services.length) {
+          req.body.services = services;
+        }
+      });
+    }
     if (req.body.images) {
       let images = [];
       await Promise.all(
         req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('Posts/')) {
+          if (file.url.startsWith('posts/')) {
             images.push(file);
           } else {
-            const filename = `Posts/${removeSpace(
-              req.body.name
+            const filename = `posts/${removeSpace(
+              req.body.post_name
             )}-${Date.now()}-${i + 1}.jpeg`;
             var image = file.url.replace(/^data:.+;base64,/, '');
             var imageeBuffer = new Buffer.from(image, 'base64');

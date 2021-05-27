@@ -164,7 +164,30 @@ exports.getAllServices = catchAsyncFunc(async (req, res, next) => {
   });
 });
 
-exports.getOneService = factory.getOne(Service);
+exports.getOneService = catchAsyncFunc(async (req, res, next) => {
+  let query = Service.findById(req.params.id);
+
+  const data = await query
+    .populate({
+      path: 'parent',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'business_types',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'sectors',
+      select: 'name _id'
+    });
+  if (!data) {
+    return next(new AppError('There is no dataument with that id', 404));
+  }
+  res.status(200).send({
+    status: 'Success',
+    data
+  });
+});
 
 exports.updateService = factory.updateOne(Service);
 
