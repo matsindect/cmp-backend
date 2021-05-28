@@ -10,7 +10,7 @@ const removeSpace = item => {
   return item.replace(/\s/g, '-');
 };
 exports.createProductCategory = catchAsyncFunc(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   let data;
   if (req.body._id != null || req.body._id != undefined) {
     if (req.body.business_types) {
@@ -156,7 +156,15 @@ exports.createProductCategory = catchAsyncFunc(async (req, res, next) => {
       );
       req.body.images = images;
     }
-    let data = await ProductCategory.create(req.body);
+    let prodcategory = await ProductCategory.create(req.body);
+    data = ProductCategory.findById(prodcategory._id).populate({
+      path: 'parent',
+      select: 'name _id',
+      path: 'business_types',
+      select: 'name _id',
+      path: 'sectors',
+      select: 'name _id'
+    });
     res.status(201).send({
       status: 'success',
       data

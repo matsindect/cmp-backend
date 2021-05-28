@@ -11,6 +11,20 @@ const removeSpace = item => {
 };
 exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
   if (req.body._id) {
+    if (req.body.categories) {
+      let categories = [];
+      req.body.categories.map(item => {
+        if (item.value) {
+          categories.push(item.value);
+        } else {
+          categories.push(item._id);
+        }
+
+        if (categories.length === req.body.categories.length) {
+          req.body.categories = categories;
+        }
+      });
+    }
     if (req.body.images) {
       let images = [];
       await Promise.all(
@@ -46,6 +60,8 @@ exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
       })
       .populate({
         path: 'children',
+        select: 'name _id',
+        path: 'categories',
         select: 'name _id'
       });
 
@@ -60,6 +76,20 @@ exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
       }
     });
   } else {
+    if (req.body.categories) {
+      let categories = [];
+      req.body.categories.map(item => {
+        if (item.value) {
+          categories.push(item.value);
+        } else {
+          categories.push(item._id);
+        }
+
+        if (categories.length === req.body.categories.length) {
+          req.body.categories = categories;
+        }
+      });
+    }
     if (req.body.images) {
       let images = [];
       await Promise.all(
@@ -85,7 +115,16 @@ exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
       );
       req.body.images = images;
     }
-    let data = await BusinessType.create(req.body);
+    let btype = await BusinessType.create(req.body);
+    let data = await BusinessType.findById(btype._id)
+      .populate({
+        path: 'parent',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'categories',
+        select: 'name _id'
+      });
     res.status(201).send({
       status: 'success',
       data
@@ -107,6 +146,10 @@ exports.getAllBusinessTypes = catchAsyncFunc(async (req, res, next) => {
       select: 'name _id'
     })
     .populate({
+      path: 'categories',
+      select: 'name _id'
+    })
+    .populate({
       path: 'children',
       select: 'name _id'
     });
@@ -120,6 +163,8 @@ exports.getAllBusinessTypes = catchAsyncFunc(async (req, res, next) => {
 
 exports.getOneBusinessType = factory.getOne(BusinessType, {
   path: 'parent',
+  select: 'name _id',
+  path: 'categories',
   select: 'name _id'
 });
 

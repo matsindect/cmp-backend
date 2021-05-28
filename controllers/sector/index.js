@@ -40,7 +40,7 @@ exports.resizeIcon = catchAsyncFunc(async (req, res, next) => {
 });
 
 exports.createSector = catchAsyncFunc(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   if (req.body._id) {
     if (req.body.business_types) {
       let business_types = [];
@@ -194,15 +194,15 @@ exports.createSector = catchAsyncFunc(async (req, res, next) => {
       );
       req.body.images = images;
     }
-    let data = await Sectors.create(req.body)
-      .populate({
-        path: 'parent',
-        select: 'name _id'
-      })
-      .populate({
-        path: 'business_types',
-        select: 'name _id'
-      });
+    let sector = await Sectors.create(req.body);
+    data = Sectors.findById(sector._id).populate({
+      path: 'parent',
+      select: 'name _id',
+      path: 'business_types',
+      select: 'name _id',
+      path: 'sectors',
+      select: 'name _id'
+    });
     res.status(201).send({
       status: 'success',
       data

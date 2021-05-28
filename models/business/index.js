@@ -39,6 +39,12 @@ const BusinessTypeSchema = new mongoose.Schema(
         ref: 'BusinessType'
       }
     ],
+    categories: [
+      {
+        type: types.ObjectId,
+        ref: 'Category'
+      }
+    ],
     parent: [
       {
         type: types.ObjectId,

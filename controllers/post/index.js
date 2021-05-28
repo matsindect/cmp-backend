@@ -11,7 +11,11 @@ const removeSpace = item => {
 };
 exports.createPost = catchAsyncFunc(async (req, res, next) => {
   let data;
+
   if (req.body._id != null || req.body._id != undefined) {
+    if (req.user.id) {
+      req.body.user = req.user.id;
+    }
     if (req.body.business_types) {
       let business_types = [];
       req.body.business_types.map(item => {

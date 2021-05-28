@@ -126,7 +126,15 @@ exports.createService = catchAsyncFunc(async (req, res, next) => {
       );
       req.body.images = images;
     }
-    data = await Service.create(req.body);
+    var service = await Service.create(req.body);
+    data = Service.findById(service._id).populate({
+      path: 'parent',
+      select: 'name _id',
+      path: 'business_types',
+      select: 'name _id',
+      path: 'sectors',
+      select: 'name _id'
+    });
   }
 
   res.status(201).send({
@@ -143,19 +151,14 @@ exports.getAllServices = catchAsyncFunc(async (req, res, next) => {
     .fieldSort()
     .paginate();
 
-  const data = await tax_terms.query
-    .populate({
-      path: 'parent',
-      select: 'name _id'
-    })
-    .populate({
-      path: 'business_types',
-      select: 'name _id'
-    })
-    .populate({
-      path: 'sectors',
-      select: 'name _id'
-    });
+  const data = await tax_terms.query.populate({
+    path: 'parent',
+    select: 'name _id',
+    path: 'business_types',
+    select: 'name _id',
+    path: 'sectors',
+    select: 'name _id'
+  });
   // console.log(data);
   res.status(200).send({
     status: 'Success',

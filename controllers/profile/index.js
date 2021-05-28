@@ -53,7 +53,12 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     if (req.body.services) {
       let services = [];
       req.body.services.map(item => {
-        services.push(item.value);
+        if (item.value) {
+          services.push(item.value);
+        } else {
+          services.push(item._id);
+        }
+
         if (services.length === req.body.services.length) {
           profile.services = services;
         }
@@ -62,7 +67,11 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     if (req.body.sectors) {
       let sectors = [];
       req.body.sectors.map(item => {
-        sectors.push(item.value);
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
         if (sectors.length === req.body.sectors.length) {
           profile.sectors = sectors;
         }
@@ -71,7 +80,12 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     if (req.body.categories) {
       let categories = [];
       req.body.categories.map(item => {
-        categories.push(item.value);
+        if (item.value) {
+          categories.push(item.value);
+        } else {
+          categories.push(item._id);
+        }
+
         if (categories.length === req.body.categories.length) {
           req.body.categories = categories;
         }
