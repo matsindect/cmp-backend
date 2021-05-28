@@ -11,7 +11,6 @@ const removeSpace = item => {
 };
 exports.createPost = catchAsyncFunc(async (req, res, next) => {
   let data;
-
   if (req.body._id != null || req.body._id != undefined) {
     if (req.user.id) {
       req.body.user = req.user.id;
