@@ -2,7 +2,8 @@ const express = require('express');
 const authController = require('./../controllers/authController');
 const BusinessTypeController = require('./../controllers/business');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+
 router
   .route('/')
   .post(

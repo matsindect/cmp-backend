@@ -14,6 +14,9 @@ const attributesSchema = new mongoose.Schema(
     slug: {
       type: String
     },
+    type: {
+      type: String
+    },
     order: {
       type: Number,
       required: true,

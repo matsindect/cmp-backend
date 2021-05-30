@@ -134,6 +134,12 @@ exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
 
 exports.getAllBusinessTypes = catchAsyncFunc(async (req, res, next) => {
   let filter = { active: true };
+  if (req.params.id) {
+    filter = {
+      active: true,
+      categories: req.params.id
+    };
+  }
   const tax_terms = new APIresourceFunc(BusinessType.find(filter), req.query)
     .AdvancedFilter()
     .sort()
