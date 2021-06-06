@@ -120,9 +120,7 @@ exports.createSector = catchAsyncFunc(async (req, res, next) => {
 
     res.status(200).send({
       status: 'Success',
-      data: {
-        doc
-      }
+      data: doc
     });
   } else {
     // console.log(req.body);
@@ -277,9 +275,7 @@ exports.updateSector = catchAsyncFunc(async (req, res, next) => {
 
   res.status(200).send({
     status: 'Success',
-    data: {
-      doc
-    }
+    data: doc
   });
 });
 
