@@ -31,6 +31,7 @@ server.use(express.static(path.join(__dirname, 'public')));
 
 var whitelist = [
   'http://localhost:3000',
+  'http://localhost:3001',
   'http://localhost',
   'https://constructionmarketuae.com',
   'https://constructmeplace.com',

@@ -29,4 +29,9 @@ router
     ServiceController.deleteService
   );
 
+router.route('/by-business-type').post(
+  authController.protect,
+  // authController.restrictTo('admin'),
+  ServiceController.getServiceByBusinessType
+);
 module.exports = router;

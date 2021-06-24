@@ -195,3 +195,62 @@ exports.getOneService = catchAsyncFunc(async (req, res, next) => {
 exports.updateService = factory.updateOne(Service);
 
 exports.deleteService = factory.deleteOne(Service);
+
+exports.getServiceByBusinessType = catchAsyncFunc(async (req, res, next) => {
+  var s = [];
+  req.body.sectors.map(t => {
+    s.push(t.value);
+  });
+  // get the services
+  let filter = { is_active: true, sectors: { $in: s } };
+  const tax_terms = new AAPIresourceFunc(Service.find(filter), req.query)
+    .AdvancedFilter()
+    .sort()
+    .fieldSort()
+    .paginate();
+
+  const data = await tax_terms.query.populate({
+    path: 'parent',
+    select: 'name _id',
+    path: 'business_types',
+    select: 'name _id',
+    path: 'sectors',
+    select: 'name _id'
+  });
+
+  //Classify the services by business type
+  var servicesByBT = [];
+  data.map(service => {
+    console.log(service.business_types);
+    req.body.business_types.map(bt => {
+      if (service.business_types.includes(bt.value)) {
+        console.log(bt.value);
+        if (servicesByBT.length < 1) {
+          servicesByBT.push({
+            value: bt.value,
+            label: bt.label,
+            data: [service]
+          });
+        } else {
+          servicesByBT.map(element => {
+            // console.log(servicesByBT);
+            if (element['value'] === bt.value) {
+              element['data'] = [...element['data'], service];
+            } else {
+              servicesByBT.push({ value: bt.value, data: [service] });
+              console.log(servicesByBT);
+            }
+          });
+        }
+      }
+    });
+  });
+  // Classify by sector
+
+  // return classified
+
+  res.status(200).send({
+    status: 'Success',
+    data: servicesByBT
+  });
+});

@@ -17,7 +17,7 @@ const removeSpace = item => {
 exports.createProfile = catchAsyncFunc(async (req, res, next) => {
   //Get fields
   let profile = {};
-  console.log(req.body);
+
   if (
     req.user.role === 'admin' &&
     String(req.body.user) != String(req.user.id)
@@ -42,12 +42,10 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     if (req.body.company.website)
       profile.company.website = req.body.company.website;
     if (req.body.company.email) profile.company.email = req.body.company.email;
-    if (req.body.business_types) {
-      req.body.business_types.forEach(element => {
-        if (!user.business_types.includes(String(element.value))) {
-          user.business_types.push(element.value);
-        }
-      });
+    if (req.body.user_types) {
+      if (!user.business_types === String(req.body.user_types.value)) {
+        user.business_types = req.body.user_types.value;
+      }
       await user.save();
     }
     if (req.body.services) {
@@ -200,17 +198,18 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     }
 
     //social
-
-    if (req.body.social.youtube)
-      profile.social.youtube = req.body.social.youtube;
-    if (req.body.social.twitter)
-      profile.social.twitter = req.body.social.twitter;
-    if (req.body.social.facebook)
-      profile.social.facebook = req.body.social.facebook;
-    if (req.body.social.linkedin)
-      profile.social.linkedin = req.body.social.linkedin;
-    if (req.body.social.instagram)
-      profile.social.instagram = req.body.social.instagram;
+    if (req.body.social) {
+      if (req.body.social.youtube)
+        profile.social.youtube = req.body.social.youtube;
+      if (req.body.social.twitter)
+        profile.social.twitter = req.body.social.twitter;
+      if (req.body.social.facebook)
+        profile.social.facebook = req.body.social.facebook;
+      if (req.body.social.linkedin)
+        profile.social.linkedin = req.body.social.linkedin;
+      if (req.body.social.instagram)
+        profile.social.instagram = req.body.social.instagram;
+    }
 
     var doc = await profile.save();
 
@@ -220,17 +219,25 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     });
   } else {
     //Create
+    if (
+      req.body.company !== undefined &&
+      req.body.company !== null &&
+      req.body.company !== ''
+    ) {
+      console.log(req.body.company);
 
-    let profile = await Profile.findOne({
-      slug: slugify(req.body.company.name, {
-        replacement: '-',
-        remove: /[*+~.()'"!:@]/g,
-        lower: true
-      })
-    });
-    if (profile) {
-      return next(new AppError('Company name already taken', 400));
+      let profile = await Profile.findOne({
+        slug: slugify(req.body.company.name, {
+          replacement: '-',
+          remove: /[*+~.()'"!:@]/g,
+          lower: true
+        })
+      });
+      if (profile) {
+        return next(new AppError('Company name already taken', 400));
+      }
     }
+
     if (req.body.services) {
       let services = [];
       req.body.services.map(item => {
@@ -258,12 +265,10 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.business_types) {
-      req.body.business_types.forEach(element => {
-        if (!user.business_types.includes(String(element.value))) {
-          user.business_types.push(element.vale);
-        }
-      });
+    if (req.body.user_types) {
+      if (!user.business_types === String(req.body.user_types.value)) {
+        user.business_types = req.body.user_types.value;
+      }
       await user.save();
     }
     req.body.user = req.user.id;

@@ -31,12 +31,10 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user', 'customer', 'store-manager', 'accounts-admin'],
     default: 'user'
   },
-  business_types: [
-    {
-      type: types.ObjectId,
-      ref: 'BusinessType'
-    }
-  ],
+  business_types: {
+    type: types.ObjectId,
+    ref: 'BusinessType'
+  },
   user_passwordChangedAt: Date,
 
   data: {
