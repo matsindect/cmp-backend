@@ -103,6 +103,12 @@ const profileSchema = new mongoose.Schema(
         ref: 'Service'
       }
     ],
+    business_types: [
+      {
+        type: types.ObjectId,
+        ref: 'BusinessType'
+      }
+    ],
     products: [
       {
         type: types.ObjectId,
@@ -146,11 +152,7 @@ profileSchema.pre('save', function(next) {
   });
   next();
 });
-profileSchema.virtual('business_types', {
-  ref: 'User',
-  foreignField: '_id',
-  localField: 'user'
-});
+
 const Profile = mongoose.model('Profile', profileSchema);
 
 module.exports = Profile;

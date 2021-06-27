@@ -75,6 +75,19 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
+    if (req.body.business_types) {
+      let business_types = [];
+      req.body.business_types.map(item => {
+        if (item.value) {
+          business_types.push(item.value);
+        } else {
+          business_types.push(item._id);
+        }
+        if (business_types.length === req.body.business_types.length) {
+          profile.business_types = business_types;
+        }
+      });
+    }
     if (req.body.contact_person) {
       let persons = [];
       req.body.contact_person.map(item => {
@@ -151,7 +164,7 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
             images.push(file);
           } else {
             const filename = `gallary/${removeSpace(
-              req.body.name
+              req.body.company.name
             )}-${Date.now()}-${i + 1}.jpeg`;
             var image = file.url.replace(/^data:.+;base64,/, '');
             var imageeBuffer = new Buffer.from(image, 'base64');
@@ -176,7 +189,7 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
             products_catalogue.push(file);
           } else {
             const filename = `profile-catalogues/${removeSpace(
-              req.body.name
+              req.body.company.name
             )}-${Date.now()}-${i + 1}.pdf`;
             var catalogue = file.url.replace(/^data:.+;base64,/, '');
             var catalogueeBuffer = new Buffer.from(catalogue, 'base64');
@@ -253,6 +266,19 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
         sectors.push(item.value);
         if (sectors.length === req.body.sectors.length) {
           req.body.sectors = sectors;
+        }
+      });
+    }
+    if (req.body.business_types) {
+      let business_types = [];
+      req.body.business_types.map(item => {
+        if (item.value) {
+          business_types.push(item.value);
+        } else {
+          business_types.push(item._id);
+        }
+        if (business_types.length === req.body.business_types.length) {
+          profile.business_types = business_types;
         }
       });
     }
@@ -400,6 +426,10 @@ exports.getProfile = catchAsyncFunc(async (req, res, next) => {
       .populate({
         path: 'parent',
         select: 'name _id'
+      })
+      .populate({
+        path: 'business_types',
+        select: 'name _id'
       });
 
     // var license = await pdf2base64(`public/${data.license}`);
@@ -414,11 +444,11 @@ exports.getProfile = catchAsyncFunc(async (req, res, next) => {
       data
     });
   } else {
-    let data = await Profile.findById(req.params.id);
-    // .populate('sectors')
-    // .populate('business_type')
-    // .populate('categories')
-    // .populate('services')
+    let data = await Profile.findById(req.params.id)
+      .populate('sectors')
+      .populate('business_type')
+      .populate('categories')
+      .populate('services');
     // .populate('city')
     // .populate('country');
 

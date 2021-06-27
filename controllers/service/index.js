@@ -199,8 +199,9 @@ exports.deleteService = factory.deleteOne(Service);
 exports.getServiceByBusinessType = catchAsyncFunc(async (req, res, next) => {
   var s = [];
   req.body.sectors.map(t => {
-    s.push(t.value);
+    s.push(t.value ? t.value : t.id);
   });
+  console.log(req.body);
   // get the services
   let filter = { is_active: true, sectors: { $in: s } };
   const tax_terms = new AAPIresourceFunc(Service.find(filter), req.query)
@@ -223,21 +224,23 @@ exports.getServiceByBusinessType = catchAsyncFunc(async (req, res, next) => {
   data.map(service => {
     console.log(service.business_types);
     req.body.business_types.map(bt => {
-      if (service.business_types.includes(bt.value)) {
-        console.log(bt.value);
+      var btValue = bt.value ? bt.value : bt.id;
+      var btLabel = bt.label ? bt.label : bt.name;
+      if (service.business_types.includes(btValue)) {
+        console.log(btValue);
         if (servicesByBT.length < 1) {
           servicesByBT.push({
-            value: bt.value,
-            label: bt.label,
+            value: btValue,
+            label: btLabel,
             data: [service]
           });
         } else {
           servicesByBT.map(element => {
             // console.log(servicesByBT);
-            if (element['value'] === bt.value) {
+            if (element['value'] === btValue) {
               element['data'] = [...element['data'], service];
             } else {
-              servicesByBT.push({ value: bt.value, data: [service] });
+              servicesByBT.push({ value: btValue, data: [service] });
               console.log(servicesByBT);
             }
           });
