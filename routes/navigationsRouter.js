@@ -1,6 +1,6 @@
 const express = require('express');
-const authController = require('./../controllers/authController');
-const ServiceCategoryController = require('./../controllers/service-categories');
+const authController = require('../controllers/authController');
+const navigationController = require('../controllers/navigations');
 
 const router = express.Router();
 router
@@ -8,12 +8,12 @@ router
   .post(
     authController.protect,
     // authController.restrictTo('admin'),
-    ServiceCategoryController.createServiceCategory
+    navigationController.createNavigation
   )
   .get(
     authController.protect,
     // authController.restrictTo('admin'),
-    ServiceCategoryController.getAllServiceCategories
+    navigationController.getAllNavigations
   );
 
 router
@@ -21,12 +21,12 @@ router
   .get(
     authController.protect,
     // authController.restrictTo('admin'),
-    ServiceCategoryController.getOneServiceCategory
+    navigationController.getOneNavigation
   )
   .delete(
     authController.protect,
     // authController.restrictTo('admin'),
-    ServiceCategoryController.deleteServiceCategory
+    navigationController.delleteNavigation
   );
 
 module.exports = router;
