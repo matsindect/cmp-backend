@@ -32,6 +32,8 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
     //Update
 
     if (req.body.company.name) profile.company.name = req.body.company.name;
+    if (req.body.company.profile_type)
+      profile.profile_type = req.body.company.profile_type;
     if (req.body.company.about) profile.company.about = req.body.company.about;
     if (req.body.company.location)
       profile.company.location = req.body.company.location;
@@ -46,6 +48,10 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
       if (!user.business_types === String(req.body.user_types.value)) {
         user.business_types = req.body.user_types.value;
       }
+      await user.save();
+    }
+    if (req.body.new_user !== undefined && req.body.new_user !== null) {
+      user.new_user = req.body.new_user;
       await user.save();
     }
     if (req.body.services) {
@@ -414,13 +420,12 @@ exports.getProfile = catchAsyncFunc(async (req, res, next) => {
       data
     });
   } else {
-    let data = await Profile.findById(req.params.id);
-    // .populate('sectors')
-    // .populate('business_type')
-    // .populate('categories')
-    // .populate('services')
-    // .populate('city')
-    // .populate('country');
+    let data = await Profile.findById(req.params.id)
+      .populate('sectors')
+      .populate('business_type')
+      .populate('categories')
+      .populate('services')
+      .populate('product');
 
     // var license = await pdf2base64(`public/${data.license}`);
 

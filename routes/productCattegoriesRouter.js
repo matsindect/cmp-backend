@@ -6,27 +6,25 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     ProductCategoryController.createProductCategory
   )
   .get(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     ProductCategoryController.getAllProductCategories
   );
 
-router
-  .route('/:id')
-  .get(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    ProductCategoryController.getOneProductCategory
-  )
-  .delete(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    ProductCategoryController.deleteProductCategory
-  );
+router.route('/:id').get(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  ProductCategoryController.getOneProductCategory
+);
+router.route('/delete').post(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  ProductCategoryController.deleteProductCategory
+);
 
 module.exports = router;

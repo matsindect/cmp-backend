@@ -55,37 +55,24 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
       });
     }
 
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('Product-attribute/')) {
-            images.push(file);
-          } else {
-            const filename = `Product-attribute/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
-
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
-    }
     // console.log(req.body.product_category);
     await ProductAttribute.findByIdAndUpdate({ _id: req.body.id }, req.body, {
       new: true,
       runValidators: true
     });
-    let data = await ProductAttribute.findOne({ _id: req.body.id });
+    let data = await ProductAttribute.findOne({ _id: req.body.id })
+      .populate({
+        path: 'sectors',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'business_type',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'product_category',
+        select: 'name _id'
+      });
     res.status(201).send({
       status: 'success',
       data
@@ -133,31 +120,7 @@ exports.createProductAttribute = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('Product-attribute/')) {
-            images.push(file);
-          } else {
-            const filename = `Product-attribute/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
 
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
-    }
     let attribute = await ProductAttribute.create(req.body);
     let data = await ProductAttribute.findOne({ _id: attribute._id })
       .populate({

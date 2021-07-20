@@ -42,34 +42,6 @@ exports.resizeIcon = catchAsyncFunc(async (req, res, next) => {
 exports.createSector = catchAsyncFunc(async (req, res, next) => {
   // console.log(req.body);
   if (req.body._id) {
-    if (req.body.business_types) {
-      let business_types = [];
-      req.body.business_types.map(item => {
-        if (item.value) {
-          business_types.push(item.value);
-        } else {
-          business_types.push(item._id);
-        }
-
-        if (business_types.length === req.body.business_types.length) {
-          req.body.business_types = business_types;
-        }
-      });
-    }
-    if (req.body.sectors) {
-      let sectors = [];
-      req.body.sectors.map(item => {
-        if (item.value) {
-          sectors.push(item.value);
-        } else {
-          sectors.push(item._id);
-        }
-
-        if (sectors.length === req.body.sectors.length) {
-          req.body.sectors = sectors;
-        }
-      });
-    }
     if (req.body.parent) {
       let parent = [];
       req.body.parent.map(item => {
@@ -84,31 +56,7 @@ exports.createSector = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('sectors/')) {
-            images.push(file);
-          } else {
-            const filename = `sectors/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
 
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
-    }
     const doc = await Sectors.findByIdAndUpdate(req.body._id, req.body, {
       new: true,
       runValidators: true
@@ -125,34 +73,6 @@ exports.createSector = catchAsyncFunc(async (req, res, next) => {
   } else {
     // console.log(req.body);
 
-    if (req.body.business_types) {
-      let business_types = [];
-      req.body.business_types.map(item => {
-        if (item.value) {
-          business_types.push(item.value);
-        } else {
-          business_types.push(item._id);
-        }
-
-        if (business_types.length === req.body.business_types.length) {
-          req.body.business_types = business_types;
-        }
-      });
-    }
-    if (req.body.sectors) {
-      let sectors = [];
-      req.body.sectors.map(item => {
-        if (item.value) {
-          sectors.push(item.value);
-        } else {
-          sectors.push(item._id);
-        }
-
-        if (sectors.length === req.body.sectors.length) {
-          req.body.sectors = sectors;
-        }
-      });
-    }
     if (req.body.parent) {
       let parent = [];
       req.body.parent.map(item => {
@@ -167,40 +87,14 @@ exports.createSector = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('sectors/')) {
-            images.push(file);
-          } else {
-            const filename = `sectors/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
 
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
-    }
     let sector = await Sectors.create(req.body);
-    data = Sectors.findById(sector._id).populate({
+
+    data = await Sectors.findById(sector._id).populate({
       path: 'parent',
-      select: 'name _id',
-      path: 'business_types',
-      select: 'name _id',
-      path: 'sectors',
       select: 'name _id'
     });
+    // console.log(data);
     res.status(201).send({
       status: 'success',
       data
@@ -209,12 +103,12 @@ exports.createSector = catchAsyncFunc(async (req, res, next) => {
 });
 
 exports.getAllSectors = catchAsyncFunc(async (req, res, next) => {
-  let filter = { active: true };
+  let filter = {};
   const tax_terms = new APIresourceFunc(Sectors.find(filter), req.query)
     .AdvancedFilter()
     .sort()
-    .fieldSort()
-    .paginate();
+    .fieldSort();
+  // .paginate();
 
   const data = await tax_terms.query
     .populate({
@@ -233,37 +127,23 @@ exports.getAllSectors = catchAsyncFunc(async (req, res, next) => {
   });
 });
 
-exports.getOneSector = factory.getOne(Sectors, {
-  path: 'business_types',
-  select: 'name _id'
+exports.getOneSector = catchAsyncFunc(async (req, res, next) => {
+  query = Sectors.findById(req.params.id).populate({
+    path: 'parent',
+    select: 'name _id'
+  });
+
+  const data = await query;
+  if (!data) {
+    return next(new AppError('There is no dataument with that id', 404));
+  }
+  res.status(200).send({
+    status: 'Success',
+    data
+  });
 });
 
 exports.updateSector = catchAsyncFunc(async (req, res, next) => {
-  if (req.body.images) {
-    let images = [];
-    await Promise.all(
-      req.body.images.map(async (file, i) => {
-        if (file.url.startsWith('sectors/')) {
-          images.push(file);
-        } else {
-          const filename = `sectors/${removeSpace(
-            req.body.name
-          )}-${Date.now()}-${i + 1}.jpeg`;
-          var image = file.url.replace(/^data:.+;base64,/, '');
-          var imageeBuffer = new Buffer.from(image, 'base64');
-          await sharp(imageeBuffer)
-            .resize(2000, 1333)
-            .toFormat('jpeg')
-            .jpeg({ quality: 90 })
-            .toFile(`public/${filename}`);
-
-          file.url = filename;
-          images.push(file);
-        }
-      })
-    );
-    req.body.images = images;
-  }
   const doc = await Sectors.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true

@@ -7,8 +7,8 @@ const router = express.Router({ mergeParams: true });
 router
   .route('/')
   .post(
-    authController.protect,
-    authController.restrictTo('admin'),
+    // authController.protect,
+    // authController.restrictTo('admin'),
     BusinessTypeController.createBusinessType
   )
   .get(
@@ -20,15 +20,15 @@ router
 router
   .route('/:id')
   .get(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     BusinessTypeController.getOneBusinessType
   )
-  .patch(authController.protect, BusinessTypeController.updateBusinessType)
-  .delete(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    BusinessTypeController.deleteBusinessType
-  );
+  .patch(authController.protect, BusinessTypeController.updateBusinessType);
+router.route('/delete').post(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  BusinessTypeController.deleteBusinessType
+);
 
 module.exports = router;

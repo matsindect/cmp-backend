@@ -9,49 +9,138 @@ const fs = require('fs');
 const removeSpace = item => {
   return item.replace(/\s/g, '-');
 };
-exports.createServiceCategory = catchAsyncFunc(async(req,res, next)=>{
+exports.createServiceCategory = catchAsyncFunc(async (req, res, next) => {
   let data;
-if (req.body._id != null || req.body._id != undefined) {
-  console.log(req.body._id);
-  data = await ServiceCategory.findByIdAndUpdate({ _id: req.body.id }, req.body, {
-    new: true,
-    runValidators: true
-  });
-} else {
-  if (req.body.images) {
-    let images = [];
-    await Promise.all(
-      req.body.images.map(async (file, i) => {
-        if (file.url.startsWith('Service-categories/')) {
-          images.push(file);
+  if (req.body._id != null || req.body._id != undefined) {
+    if (req.body.business_types) {
+      let business_types = [];
+      req.body.business_types.map(item => {
+        if (item.value) {
+          business_types.push(item.value);
         } else {
-          const filename = `Service-categories/${removeSpace(
-            req.body.name
-          )}-${Date.now()}-${i + 1}.jpeg`;
-          var image = file.url.replace(/^data:.+;base64,/, '');
-          var imageeBuffer = new Buffer.from(image, 'base64');
-          await sharp(imageeBuffer)
-            .resize(2000, 1333)
-            .toFormat('jpeg')
-            .jpeg({ quality: 90 })
-            .toFile(`public/${filename}`);
-
-          file.url = filename;
-          images.push(file);
+          business_types.push(item._id);
         }
-      })
+
+        if (business_types.length === req.body.business_types.length) {
+          req.body.business_types = business_types;
+        }
+      });
+    }
+    if (req.body.sectors) {
+      let sectors = [];
+      req.body.sectors.map(item => {
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
+
+        if (sectors.length === req.body.sectors.length) {
+          req.body.sectors = sectors;
+        }
+      });
+    }
+    if (req.body.parent) {
+      let parent = [];
+      req.body.parent.map(item => {
+        if (item.value) {
+          parent.push(item.value);
+        } else {
+          parent.push(item._id);
+        }
+
+        if (parent.length === req.body.parent.length) {
+          req.body.parent = parent;
+        }
+      });
+    }
+    let scategory = await ServiceCategory.findByIdAndUpdate(
+      { _id: req.body.id },
+      req.body,
+      {
+        new: true,
+        runValidators: true
+      }
     );
-    req.body.images = images;
+
+    data = await ServiceCategory.findById(scategory._id)
+      .populate({
+        path: 'parent',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'business_types',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'sectors',
+        select: 'name _id'
+      });
+  } else {
+    if (req.body.business_types) {
+      let business_types = [];
+      req.body.business_types.map(item => {
+        if (item.value) {
+          business_types.push(item.value);
+        } else {
+          business_types.push(item._id);
+        }
+
+        if (business_types.length === req.body.business_types.length) {
+          req.body.business_types = business_types;
+        }
+      });
+    }
+    if (req.body.sectors) {
+      let sectors = [];
+      req.body.sectors.map(item => {
+        if (item.value) {
+          sectors.push(item.value);
+        } else {
+          sectors.push(item._id);
+        }
+
+        if (sectors.length === req.body.sectors.length) {
+          req.body.sectors = sectors;
+        }
+      });
+    }
+    if (req.body.parent) {
+      let parent = [];
+      req.body.parent.map(item => {
+        if (item.value) {
+          parent.push(item.value);
+        } else {
+          parent.push(item._id);
+        }
+
+        if (parent.length === req.body.parent.length) {
+          console.log(parent);
+          req.body.parent = parent;
+        }
+      });
+    }
+    let scategory = await ServiceCategory.create(req.body);
+    data = await ServiceCategory.findById(scategory._id)
+      .populate({
+        path: 'parent',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'business_types',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'sectors',
+        select: 'name _id'
+      });
   }
-  data = await ServiceCategory.create(req.body);
-}
 
-res.status(201).send({
-  status: 'success',
-  data
+  res.status(201).send({
+    status: 'success',
+    data
+  });
 });
-})
-
 
 exports.getAllServiceCategories = catchAsyncFunc(async (req, res, next) => {
   let filter = { is_active: true };

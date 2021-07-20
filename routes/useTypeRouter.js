@@ -1,38 +1,32 @@
 const express = require('express');
 const authController = require('./../controllers/authController');
-const categoryController = require('./../controllers/categories');
 const userTypeController = require('./../controllers/categories/user-type');
-const categoryRouter = require('./businessRouter');
 
 const router = express.Router();
-router.use('/:id/registration', categoryRouter);
+/// USer type Routes
+
 router
   .route('/')
   .post(
     // authController.protect,
     // authController.restrictTo('admin'),
-    categoryController.createCategory
+    userTypeController.createUsertype
   )
   .get(
     // authController.protect,
     // authController.restrictTo('admin'),
-    categoryController.getAllCategories
+    userTypeController.getAllUsertypes
   );
-router.route('/sub').get(
-  // authController.protect,
-  // authController.restrictTo('admin'),
-  categoryController.getSubCategories
-);
 
 router.route('/:id').get(
   // authController.protect,
   // authController.restrictTo('admin'),
-  categoryController.getOneCategory
+  userTypeController.getOneUsertype
 );
+
 router.route('/delete').post(
   // authController.protect,
   // authController.restrictTo('admin'),
-  categoryController.deleteCategory
+  userTypeController.deleteUsertype
 );
-
 module.exports = router;

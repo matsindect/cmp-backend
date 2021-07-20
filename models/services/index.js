@@ -29,10 +29,12 @@ const serviceSchema = new mongoose.Schema(
         }
       }
     ],
-    featuredImageId: {
-      type: types.ObjectId,
-      ref: 'Service'
-    },
+    service_categories: [
+      {
+        type: types.ObjectId,
+        ref: 'ServiceCategory'
+      }
+    ],
     sectors: [
       {
         type: types.ObjectId,

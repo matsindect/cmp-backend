@@ -32,10 +32,7 @@ const attributesSchema = new mongoose.Schema(
         }
       }
     ],
-    featuredImageId: {
-      type: types.ObjectId,
-      ref: 'Service'
-    },
+
     sectors: [
       {
         type: types.ObjectId,

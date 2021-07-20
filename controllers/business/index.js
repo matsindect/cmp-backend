@@ -25,31 +25,7 @@ exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('business-type/')) {
-            images.push(file);
-          } else {
-            const filename = `business-type/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
 
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
-    }
     const doc = await BusinessType.findByIdAndUpdate(req.body._id, req.body, {
       new: true,
       runValidators: true
@@ -76,6 +52,7 @@ exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
       }
     });
   } else {
+    // console.log(doc);
     if (req.body.categories) {
       let categories = [];
       req.body.categories.map(item => {
@@ -90,31 +67,7 @@ exports.createBusinessType = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('business-type/')) {
-            images.push(file);
-          } else {
-            const filename = `business-type/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
 
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
-    }
     let btype = await BusinessType.create(req.body);
     let data = await BusinessType.findById(btype._id)
       .populate({

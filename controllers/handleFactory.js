@@ -77,13 +77,14 @@ exports.updateOne = Model =>
 
 exports.deleteOne = Model =>
   catchAsyncFunc(async (req, res, next) => {
-    const doc = await Model.findByIdAndUpdate(req.params.id, {
-      active: false
-    });
-
-    if (!doc) {
-      return next(new AppError('There is no document with that id', 404));
+    if (req.body.productIds instanceof Array) {
+      req.body.productIds.forEach(async id => {
+        await Model.findByIdAndDelete(id);
+      });
+    } else {
+      await Model.findByIdAndDelete(req.body.productIds);
     }
+
     res.status(204).send({
       status: 'Success',
       data: null

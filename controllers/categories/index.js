@@ -44,46 +44,13 @@ exports.createCategory = catchAsyncFunc(async (req, res, next) => {
   let data;
   if (req.body._id != null || req.body._id != undefined) {
     // console.log(req.body);
-    if (req.body.parent_categories.length > 0) {
-      req.body.parent_categories.forEach(async category => {
-        console.log(category.value);
-        Categories.updateOne(
-          {
-            _id: category.value,
-            'child_categories.value': { $ne: req.body._id }
-          },
-          {
-            $push: {
-              child_categories: { value: req.body._id, label: req.body.name }
-            }
-          },
-          function(err, documents) {
-            console.log(documents);
-          }
-        );
-      });
-    }
+
     data = await Categories.findByIdAndUpdate({ _id: req.body.id }, req.body, {
       new: true,
       runValidators: true
     });
   } else {
     data = await Categories.create(req.body);
-    if (data.parent_categories.length > 0) {
-      data.parent_categories.forEach(async category => {
-        await Categories.updateOne(
-          {
-            _id: category.value,
-            'child_categories.value': { $ne: data._id }
-          },
-          {
-            $push: {
-              child_categories: { value: data._id, label: data.name }
-            }
-          }
-        );
-      });
-    }
   }
 
   res.status(201).send({

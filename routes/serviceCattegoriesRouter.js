@@ -6,27 +6,25 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     ServiceCategoryController.createServiceCategory
   )
   .get(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     ServiceCategoryController.getAllServiceCategories
   );
 
-router
-  .route('/:id')
-  .get(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    ServiceCategoryController.getOneServiceCategory
-  )
-  .delete(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    ServiceCategoryController.deleteServiceCategory
-  );
+router.route('/:id').get(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  ServiceCategoryController.getOneServiceCategory
+);
+router.route('/delete').post(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  ServiceCategoryController.deleteServiceCategory
+);
 
 module.exports = router;

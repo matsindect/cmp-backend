@@ -103,6 +103,10 @@ const profileSchema = new mongoose.Schema(
         ref: 'Service'
       }
     ],
+    profile_type: {
+      type: types.ObjectId,
+      ref: 'usertype'
+    },
     products: [
       {
         type: types.ObjectId,

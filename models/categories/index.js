@@ -24,10 +24,6 @@ const categorySchema = new mongoose.Schema(
         }
       }
     ],
-    featuredImageId: {
-      type: types.ObjectId,
-      ref: 'Category'
-    },
     sectors: [
       {
         value: {
@@ -50,17 +46,7 @@ const categorySchema = new mongoose.Schema(
         }
       }
     ],
-    child_categories: [
-      {
-        value: {
-          type: types.ObjectId,
-          ref: 'Category'
-        },
-        label: {
-          type: String
-        }
-      }
-    ],
+
     order: {
       type: Number,
       required: true,

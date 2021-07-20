@@ -6,9 +6,6 @@ const AAPIresourceFunc = require('../../utils/APIresourceFunc');
 const sharp = require('sharp');
 const fs = require('fs');
 
-const removeSpace = item => {
-  return item.replace(/\s/g, '-');
-};
 exports.createService = catchAsyncFunc(async (req, res, next) => {
   let data;
   if (req.body._id != null || req.body._id != undefined) {
@@ -22,7 +19,23 @@ exports.createService = catchAsyncFunc(async (req, res, next) => {
         }
 
         if (business_types.length === req.body.business_types.length) {
+          // console.log(business_types);
           req.body.business_types = business_types;
+        }
+      });
+    }
+    if (req.body.service_categories) {
+      let service_categories = [];
+      req.body.service_categories.map(item => {
+        if (item.value) {
+          service_categories.push(item.value);
+        } else {
+          service_categories.push(item._id);
+        }
+
+        if (service_categories.length === req.body.service_categories.length) {
+          // console.log(service_categories);
+          req.body.service_categories = service_categories;
         }
       });
     }
@@ -54,10 +67,31 @@ exports.createService = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    data = await Service.findByIdAndUpdate({ _id: req.body.id }, req.body, {
-      new: true,
-      runValidators: true
-    });
+    let service = await Service.findByIdAndUpdate(
+      { _id: req.body.id },
+      req.body,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+    data = await Service.findById(service._id)
+      .populate({
+        path: 'sectors',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'parent',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'business_types',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'service_categories',
+        select: 'name _id'
+      });
   } else {
     if (req.body.business_types) {
       let business_types = [];
@@ -101,40 +135,39 @@ exports.createService = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('service/')) {
-            images.push(file);
-          } else {
-            const filename = `service/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
+    if (req.body.service_categories) {
+      let service_categories = [];
+      req.body.service_categories.map(item => {
+        if (item.value) {
+          service_categories.push(item.value);
+        } else {
+          service_categories.push(item._id);
+        }
 
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
+        if (service_categories.length === req.body.service_categories.length) {
+          // console.log(service_categories);
+          req.body.service_categories = service_categories;
+        }
+      });
     }
     var service = await Service.create(req.body);
-    data = Service.findById(service._id).populate({
-      path: 'parent',
-      select: 'name _id',
-      path: 'business_types',
-      select: 'name _id',
-      path: 'sectors',
-      select: 'name _id'
-    });
+    data = await Service.findById(service._id)
+      .populate({
+        path: 'sectors',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'parent',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'business_types',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'service_categories',
+        select: 'name _id'
+      });
   }
 
   res.status(201).send({
@@ -151,14 +184,23 @@ exports.getAllServices = catchAsyncFunc(async (req, res, next) => {
     .fieldSort()
     .paginate();
 
-  const data = await tax_terms.query.populate({
-    path: 'parent',
-    select: 'name _id',
-    path: 'business_types',
-    select: 'name _id',
-    path: 'sectors',
-    select: 'name _id'
-  });
+  const data = await tax_terms.query
+    .populate({
+      path: 'sectors',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'parent',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'business_types',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'service_categories',
+      select: 'name _id'
+    });
   // console.log(data);
   res.status(200).send({
     status: 'Success',
@@ -172,6 +214,10 @@ exports.getOneService = catchAsyncFunc(async (req, res, next) => {
 
   const data = await query
     .populate({
+      path: 'sectors',
+      select: 'name _id'
+    })
+    .populate({
       path: 'parent',
       select: 'name _id'
     })
@@ -180,7 +226,7 @@ exports.getOneService = catchAsyncFunc(async (req, res, next) => {
       select: 'name _id'
     })
     .populate({
-      path: 'sectors',
+      path: 'service_categories',
       select: 'name _id'
     });
   if (!data) {

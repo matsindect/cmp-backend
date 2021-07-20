@@ -47,10 +47,6 @@ const serviceCategorySchema = new mongoose.Schema(
         }
       }
     ],
-    featuredImageId: {
-      type: types.ObjectId,
-      ref: 'Service'
-    },
     parent: [
       {
         type: types.ObjectId,

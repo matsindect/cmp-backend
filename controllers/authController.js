@@ -33,7 +33,37 @@ const handshakeToken = (user, statusCode, res) => {
 
 exports.signup = catchAsyncFunc(async (req, res, next) => {
   // console.log(req.body);
-  const newUser = await User.create(req.body);
+  const user = {
+    password: req.body.password,
+    role: req.body.role ? req.body.role : 'admin',
+    confirmpassword: req.body.password,
+    data: {
+      displayName: req.body.displayName,
+      photoURL: 'assets/images/avatars/Abbott.jpg',
+      email: req.body.email,
+      settings: {
+        layout: {
+          style: 'layout1',
+          config: {
+            footer: { display: true, style: 'fixed', position: 'below' },
+            navbar: { display: true, folded: true, position: 'left' },
+            scroll: 'content',
+            toolbar: { display: true, style: 'fixed', position: 'below' }
+          }
+        },
+        customScrollbars: true,
+        direction: 'ltr',
+        theme: {
+          main: 'default',
+          navbar: 'greyDark',
+          toolbar: 'mainThemeLight',
+          footer: 'mainThemeDark'
+        }
+      },
+      shortcuts: []
+    }
+  };
+  const newUser = await User.create(user);
   handshakeToken(newUser, 201, res);
 });
 

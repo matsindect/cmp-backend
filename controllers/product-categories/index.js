@@ -55,32 +55,8 @@ exports.createProductCategory = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('Product-categories/')) {
-            images.push(file);
-          } else {
-            const filename = `Product-categories/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
 
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
-    }
-    data = await ProductCategory.findByIdAndUpdate(
+    let saved = await ProductCategory.findByIdAndUpdate(
       { _id: req.body.id },
       req.body,
       {
@@ -88,6 +64,19 @@ exports.createProductCategory = catchAsyncFunc(async (req, res, next) => {
         runValidators: true
       }
     );
+    data = await ProductCategory.findById(saved._id)
+      .populate({
+        path: 'parent',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'business_types',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'sectors',
+        select: 'name _id'
+      });
   } else {
     if (req.body.business_types) {
       let business_types = [];
@@ -131,45 +120,26 @@ exports.createProductCategory = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
-    if (req.body.images) {
-      let images = [];
-      await Promise.all(
-        req.body.images.map(async (file, i) => {
-          if (file.url.startsWith('Product-categories/')) {
-            images.push(file);
-          } else {
-            const filename = `Product-categories/${removeSpace(
-              req.body.name
-            )}-${Date.now()}-${i + 1}.jpeg`;
-            var image = file.url.replace(/^data:.+;base64,/, '');
-            var imageeBuffer = new Buffer.from(image, 'base64');
-            await sharp(imageeBuffer)
-              .resize(2000, 1333)
-              .toFormat('jpeg')
-              .jpeg({ quality: 90 })
-              .toFile(`public/${filename}`);
 
-            file.url = filename;
-            images.push(file);
-          }
-        })
-      );
-      req.body.images = images;
-    }
     let prodcategory = await ProductCategory.create(req.body);
-    data = ProductCategory.findById(prodcategory._id).populate({
-      path: 'parent',
-      select: 'name _id',
-      path: 'business_types',
-      select: 'name _id',
-      path: 'sectors',
-      select: 'name _id'
-    });
-    res.status(201).send({
-      status: 'success',
-      data
-    });
+    data = await ProductCategory.findById(prodcategory._id)
+      .populate({
+        path: 'parent',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'business_types',
+        select: 'name _id'
+      })
+      .populate({
+        path: 'sectors',
+        select: 'name _id'
+      });
   }
+  res.status(201).send({
+    status: 'success',
+    data
+  });
 });
 
 exports.getAllProductCategories = catchAsyncFunc(async (req, res, next) => {

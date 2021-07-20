@@ -7,11 +7,10 @@ router
   .route('/')
   .post(authController.protect, profileController.createProfile)
   .get(authController.protect, profileController.getAllProfiles);
-  
 
 router
   .route('/:id')
-  .get(authController.protect, profileController.getProfile)
+  .get(profileController.getProfile)
   .delete(
     authController.protect,
     authController.restrictTo('admin'),

@@ -6,7 +6,7 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     sectorController.createSector
   )
@@ -19,15 +19,18 @@ router
 router
   .route('/:id')
   .get(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     sectorController.getOneSector
   )
-  .patch(authController.protect, sectorController.updateSector)
-  .delete(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    sectorController.deleteSector
+  .patch(
+    // authController.protect,
+    sectorController.updateSector
   );
+router.route('/delete').post(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  sectorController.deleteSector
+);
 
 module.exports = router;

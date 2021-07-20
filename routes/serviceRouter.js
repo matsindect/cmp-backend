@@ -6,28 +6,26 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     ServiceController.createService
   )
   .get(
-    authController.protect,
+    // authController.protect,
     // authController.restrictTo('admin'),
     ServiceController.getAllServices
   );
 
-router
-  .route('/:id')
-  .get(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    ServiceController.getOneService
-  )
-  .delete(
-    authController.protect,
-    // authController.restrictTo('admin'),
-    ServiceController.deleteService
-  );
+router.route('/:id').get(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  ServiceController.getOneService
+);
+router.route('/delete').post(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  ServiceController.deleteService
+);
 
 router.route('/by-business-type').post(
   authController.protect,

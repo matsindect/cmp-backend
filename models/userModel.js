@@ -102,6 +102,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
     select: false
   },
+  new_user: { type: Boolean, default: true },
   is_active: {
     type: Boolean,
     default: true,

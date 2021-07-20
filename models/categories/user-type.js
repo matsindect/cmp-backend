@@ -3,38 +3,17 @@ const Schema = mongoose.Schema;
 const types = Schema.Types;
 const slugify = require('slugify');
 
-const sectorSchema = new mongoose.Schema(
+const usertypeSchema = new mongoose.Schema(
   {
     name: {
-      type: String
-    },
-    slug: {
       type: String
     },
     description: {
       type: String
     },
-    order: {
-      type: Number,
-      required: true,
-      min: 0
+    slug: {
+      type: String
     },
-    parent: [
-      {
-        type: types.ObjectId,
-        ref: 'Sector'
-      }
-    ],
-    business_types: [
-      {
-        type: types.ObjectId,
-        ref: 'BusinessType'
-      }
-    ],
-    // featuredImageId: {
-    //   type: types.ObjectId,
-    //   ref: 'Sector'
-    // },
     images: [
       {
         url: { type: String },
@@ -45,6 +24,7 @@ const sectorSchema = new mongoose.Schema(
         }
       }
     ],
+
     active: {
       type: Boolean,
       default: true,
@@ -57,7 +37,7 @@ const sectorSchema = new mongoose.Schema(
   }
 );
 
-sectorSchema.pre('save', function(next) {
+usertypeSchema.pre('save', function(next) {
   this.slug = slugify(this.name, {
     replacement: '-',
     remove: /[*+~.()'"!:@]/g,
@@ -65,7 +45,6 @@ sectorSchema.pre('save', function(next) {
   });
   next();
 });
+const usertype = mongoose.model('usertype', usertypeSchema);
 
-const Sector = mongoose.model('Sector', sectorSchema);
-
-module.exports = Sector;
+module.exports = usertype;
