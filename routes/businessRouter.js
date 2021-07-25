@@ -30,5 +30,10 @@ router.route('/delete').post(
   // authController.restrictTo('admin'),
   BusinessTypeController.deleteBusinessType
 );
+router.route('/get/classified/').get(
+  // authController.protect,
+  // authController.restrictTo('admin'),
+  BusinessTypeController.getClassifiedBusinessTypes
+);
 
 module.exports = router;

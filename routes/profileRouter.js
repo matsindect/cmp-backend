@@ -10,7 +10,7 @@ router
 
 router
   .route('/:id')
-  .get(profileController.getProfile)
+  .get(authController.protect, profileController.getProfile)
   .delete(
     authController.protect,
     authController.restrictTo('admin'),

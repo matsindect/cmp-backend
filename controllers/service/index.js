@@ -1,4 +1,5 @@
 const Service = require('../../models/services');
+const User = require('../../models/userModel');
 const catchAsyncFunc = require('../../utils/catchAsyncFuncs');
 const AppError = require('../../utils/appError');
 const factory = require('./../handleFactory');
@@ -263,33 +264,38 @@ exports.getServiceByBusinessType = catchAsyncFunc(async (req, res, next) => {
     path: 'sectors',
     select: 'name _id'
   });
-
+  const user = await User.findById(req.user.id).populate({
+    path: 'business_types',
+    select: 'name _id'
+  });
+  // console.log(user);
   //Classify the services by business type
   var servicesByBT = [];
   data.map(service => {
-    console.log(service.business_types);
-    req.body.business_types.map(bt => {
-      if (service.business_types.includes(bt.value)) {
-        console.log(bt.value);
-        if (servicesByBT.length < 1) {
-          servicesByBT.push({
-            value: bt.value,
-            label: bt.label,
-            data: [service]
-          });
-        } else {
-          servicesByBT.map(element => {
+    if (service.business_types.includes(user.business_types._id)) {
+      console.log(user.business_types._id);
+      if (servicesByBT.length < 1) {
+        servicesByBT.push({
+          value: user.business_types._id,
+          label: user.business_types.name,
+          data: [service]
+        });
+      } else {
+        servicesByBT.map(element => {
+          // console.log(servicesByBT);
+          if (element['value'] === user.business_types._id) {
+            element['data'] = [...element['data'], service];
+          } else {
+            servicesByBT.push({
+              value: user.business_types._id,
+              label: user.business_types.name,
+              data: [service]
+            });
             // console.log(servicesByBT);
-            if (element['value'] === bt.value) {
-              element['data'] = [...element['data'], service];
-            } else {
-              servicesByBT.push({ value: bt.value, data: [service] });
-              console.log(servicesByBT);
-            }
-          });
-        }
+          }
+        });
       }
-    });
+    }
   });
   // Classify by sector
 

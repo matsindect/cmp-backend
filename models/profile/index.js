@@ -105,7 +105,7 @@ const profileSchema = new mongoose.Schema(
     ],
     profile_type: {
       type: types.ObjectId,
-      ref: 'usertype'
+      ref: 'BusinessType'
     },
     products: [
       {

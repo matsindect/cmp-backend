@@ -5,6 +5,7 @@ const AppError = require('../../utils/appError');
 const factory = require('./../handleFactory');
 const sharp = require('sharp');
 const fs = require('fs');
+var _ = require('underscore');
 
 const removeSpace = item => {
   return item.replace(/\s/g, '-');
@@ -172,9 +173,60 @@ exports.updateBusinessType = catchAsyncFunc(async (req, res, next) => {
 
   res.status(200).send({
     status: 'Success',
-    data: {
-      doc
+    data: doc
+  });
+});
+
+exports.getClassifiedBusinessTypes = catchAsyncFunc(async (req, res, next) => {
+  let classified = [];
+  const tax_terms = new APIresourceFunc(BusinessType.find(), req.query)
+    .AdvancedFilter()
+    .sort()
+    .fieldSort()
+    .paginate();
+
+  const data = await tax_terms.query
+    .populate({
+      path: 'parent',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'categories',
+      select: 'name _id'
+    })
+    .populate({
+      path: 'children',
+      select: 'name _id'
+    });
+  data.map(fil => {
+    if (classified.length < 1) {
+      classified.push({
+        id: fil.categories[0]._id,
+        filter_label: fil.categories[0].name,
+        data: [fil]
+      });
+    } else {
+      classified.map(element => {
+        // console.log(classified)
+        if (element['id'] === fil.categories[0]._id) {
+          element['data'] = [...element['data'], fil];
+        } else {
+          classified.push({
+            id: fil.categories[0]._id,
+            filter_label: fil.categories[0].name,
+            data: [fil]
+          });
+        }
+      });
     }
+  });
+
+  classified = _.uniq(classified, function(v) {
+    return v.id;
+  });
+  res.status(200).send({
+    status: 'Success',
+    data: classified
   });
 });
 

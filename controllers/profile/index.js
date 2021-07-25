@@ -45,8 +45,8 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
       profile.company.website = req.body.company.website;
     if (req.body.company.email) profile.company.email = req.body.company.email;
     if (req.body.user_types) {
-      if (!user.business_types === String(req.body.user_types.value)) {
-        user.business_types = req.body.user_types.value;
+      if (user.business_types !== String(req.body.user_types)) {
+        user.business_types = req.body.user_types;
       }
       await user.save();
     }
@@ -271,11 +271,13 @@ exports.createProfile = catchAsyncFunc(async (req, res, next) => {
         }
       });
     }
+
     if (req.body.user_types) {
-      if (!user.business_types === String(req.body.user_types.value)) {
-        user.business_types = req.body.user_types.value;
+      if (user.business_types !== String(req.body.user_types)) {
+        user.business_types = req.body.user_types;
       }
       await user.save();
+      console.log(req.body.user_types);
     }
     req.body.user = req.user.id;
     //save Profile
